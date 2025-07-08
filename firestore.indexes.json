@@ -1,0 +1,51 @@
+{
+	"indexes": [
+		{
+			"collectionGroup": "teams",
+			"queryScope": "COLLECTION",
+			"fields": [
+				{
+					"fieldPath": "level",
+					"order": "DESCENDING"
+				},
+				{
+					"fieldPath": "last_change",
+					"order": "ASCENDING"
+				}
+			]
+		},
+		{
+			"collectionGroup": "teams",
+			"queryScope": "COLLECTION",
+			"fields": [
+				{
+					"fieldPath": "gsv_verified",
+					"order": "DESCENDING"
+				},
+				{
+					"fieldPath": "level",
+					"order": "DESCENDING"
+				},
+				{
+					"fieldPath": "last_change",
+					"order": "ASCENDING"
+				}
+			]
+		},
+		{
+			"collectionGroup": "teams",
+			"queryScope": "COLLECTION",
+			"fields": [
+				{
+					"fieldPath": "level",
+					"order": "ASCENDING"
+				},
+				{
+					"fieldPath": "last_change",
+					"order": "ASCENDING"
+				}
+			]
+		}
+	],
+	"fieldOverrides": []
+}
