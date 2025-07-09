@@ -8,7 +8,7 @@
 
 	export let data: {
 		user: { uid: string };
-		questions: { uid: string; prompt: string; level: number }[];
+		questions: { uid: string; prompt: string; level: number; hint?: string }[];
 		completed: string[];
 		logs: LogEntry[];
 	};
@@ -16,12 +16,12 @@
 	let current = 0;
 	let answer = '';
 	let loading = false;
+	let container: HTMLDivElement | null = null;
 
 	const questions = data.questions ?? [];
-	const completed = data.completed ?? [];
+	let completed = data.completed ?? [];
 	const logs = data.logs ?? [];
 
-	// 💡 Ensure current doesn't exceed bounds
 	$: if (current >= questions.length) current = questions.length - 1;
 
 	$: isCompleted = questions[current] ? completed.includes(questions[current].uid) : false;
@@ -30,8 +30,26 @@
 		? logs.filter((log) => log.questionId === questions[current].uid).reverse()
 		: [];
 
+	// Inject HTML comment with hint (invisible to user, visible in Inspect)
+	$: {
+		if (container && questions[current]?.hint) {
+			// Remove all previous hint comments
+			for (const node of Array.from(container.childNodes)) {
+				if (node.nodeType === Node.COMMENT_NODE && node.nodeValue?.includes('hint:')) {
+					container.removeChild(node);
+				}
+			}
+
+			// Add new hint comment
+			const hintText = ` hint: ${questions[current].hint} `;
+			const commentNode = document.createComment(hintText);
+			container.appendChild(commentNode);
+		}
+	}
+
 	const submit = async () => {
 		if (!questions[current]) return;
+
 		loading = true;
 
 		const res = await fetch('/api/submit', {
@@ -50,7 +68,7 @@
 			answer = '';
 
 			if (!completed.includes(questions[current].uid)) {
-				completed.push(questions[current].uid);
+				completed = [...completed, questions[current].uid]; // ✅ triggers reactivity
 			}
 
 			if (current < questions.length - 1) {
@@ -76,9 +94,10 @@
 		Level {questions[current].level}
 	</h1>
 
-	<p class="mb-4">
-		{questions[current].prompt}
-	</p>
+	<!-- Question prompt rendered here -->
+	<div class="mb-4" bind:this={container}>
+		{@html questions[current].prompt}
+	</div>
 
 	<input
 		placeholder="your answer..."

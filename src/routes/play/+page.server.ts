@@ -26,7 +26,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			return {
 				uid: doc.id,
 				prompt: data?.prompt ?? '(No prompt)',
-				level: data?.level ?? 0
+				level: data?.level ?? 0,
+				hint: data?.hint ?? null // 👈 INCLUDE THIS LINE
 			};
 		});
 
