@@ -17,7 +17,8 @@ export const GET: RequestHandler = async ({ locals }) => {
 			uid: locals.user.uid,
 			email: locals.user.email,
 			name: locals.user.name,
-			hasTeam: !!userData?.team // 👈 include this
+			hasTeam: !!userData?.team, // 👈 include this
+			banned: false // 🔒 default
 		}
 	});
 };

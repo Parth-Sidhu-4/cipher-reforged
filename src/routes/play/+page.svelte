@@ -1,4 +1,6 @@
 <script lang="ts">
+	import toast from 'svelte-5-french-toast';
+
 	type LogEntry = {
 		questionId: string;
 		entered: string;
@@ -7,10 +9,11 @@
 	};
 
 	export let data: {
-		user: { uid: string };
-		questions: { uid: string; prompt: string; level: number; hint?: string }[];
-		completed: string[];
-		logs: LogEntry[];
+		blocked: boolean;
+		user?: { uid: string };
+		questions?: { uid: string; prompt: string; level: number; hint?: string }[];
+		completed?: string[];
+		logs?: LogEntry[];
 	};
 
 	let current = 0;
@@ -30,54 +33,44 @@
 		? logs.filter((log) => log.questionId === questions[current].uid).reverse()
 		: [];
 
-	// Inject HTML comment with hint (invisible to user, visible in Inspect)
 	$: {
 		if (container && questions[current]?.hint) {
-			// Remove all previous hint comments
 			for (const node of Array.from(container.childNodes)) {
 				if (node.nodeType === Node.COMMENT_NODE && node.nodeValue?.includes('hint:')) {
 					container.removeChild(node);
 				}
 			}
-
-			// Add new hint comment
-			const hintText = ` hint: ${questions[current].hint} `;
-			const commentNode = document.createComment(hintText);
+			const commentNode = document.createComment(` hint: ${questions[current].hint} `);
 			container.appendChild(commentNode);
 		}
 	}
 
 	const submit = async () => {
 		if (!questions[current]) return;
-
 		loading = true;
+		try {
+			const res = await fetch('/api/submit', {
+				method: 'POST',
+				body: JSON.stringify({
+					answer,
+					questionId: questions[current].uid,
+					userId: data.user?.uid
+				})
+			});
+			const result = await res.json();
 
-		const res = await fetch('/api/submit', {
-			method: 'POST',
-			body: JSON.stringify({
-				answer,
-				questionId: questions[current].uid,
-				userId: data.user.uid
-			})
-		});
-
-		const result = await res.json();
-
-		if (result.correct) {
-			alert('Correct!');
-			answer = '';
-
-			if (!completed.includes(questions[current].uid)) {
-				completed = [...completed, questions[current].uid]; // ✅ triggers reactivity
+			if (result.correct) {
+				toast.success('Correct!');
+				answer = '';
+				if (!completed.includes(questions[current].uid)) {
+					completed = [...completed, questions[current].uid];
+				}
+			} else {
+				toast.error('Wrong. Give it another shot!');
 			}
-
-			if (current < questions.length - 1) {
-				current++;
-			}
-		} else {
-			alert('Wrong. Try again!');
+		} catch {
+			toast.error('Error submitting answer.');
 		}
-
 		loading = false;
 	};
 
@@ -87,14 +80,16 @@
 	};
 </script>
 
-{#if questions.length === 0}
+{#if data.blocked}
+	<p class="mt-10 text-center text-xl font-semibold text-red-600">
+		🚫 You cannot view this right now.
+	</p>
+{:else if questions.length === 0}
 	<p class="mt-8 text-center text-gray-500">⚠️ No questions available.</p>
 {:else}
-	<h1 class="mb-2 text-2xl font-bold">
-		Level {questions[current].level}
-	</h1>
+	<h1 class="mb-2 text-2xl font-bold">Level {questions[current].level}</h1>
 
-	<!-- Question prompt rendered here -->
+	<!-- Question prompt -->
 	<div class="mb-4" bind:this={container}>
 		{@html questions[current].prompt}
 	</div>
@@ -123,9 +118,7 @@
 					<span class={log.correct ? 'text-green-600' : 'text-red-500'}>
 						{log.correct ? '✅' : '❌'}
 					</span>
-					<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800">
-						{log.entered}
-					</code>
+					<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800">{log.entered}</code>
 					<span class="text-xs text-gray-400">
 						{#if typeof log.timestamp === 'string'}
 							({new Date(log.timestamp).toLocaleString()})

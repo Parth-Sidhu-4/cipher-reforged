@@ -1,7 +1,10 @@
+// src/routes/api/team/join/+server.ts
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { adminDB } from '$lib/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
+
+const MAX_TEAM_SIZE = 3;
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!locals.user) {
@@ -17,6 +20,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
 		// 1. Look up the team slug from the code
 		const codeDoc = await adminDB.collection('teamCodes').doc(code).get();
+
 		if (!codeDoc.exists) {
 			return json({ error: 'Invalid team code' }, { status: 404 });
 		}
@@ -35,8 +39,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			return json({ error: 'You are already a member of this team' }, { status: 400 });
 		}
 
-		if (teamData.members?.length >= 3) {
-			return json({ error: 'Team is already full' }, { status: 403 });
+		if (teamData.members?.length >= MAX_TEAM_SIZE) {
+			return json(
+				{ error: `Team is already full (max ${MAX_TEAM_SIZE} members)` },
+				{ status: 403 }
+			);
 		}
 
 		// 2. Add user to team
@@ -45,12 +52,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		});
 
 		// 3. Update user doc to link to this team
-		await adminDB.collection('users').doc(locals.user.uid).set(
-			{
-				team: slug
-			},
-			{ merge: true }
-		);
+		await adminDB.collection('users').doc(locals.user.uid).set({ team: slug }, { merge: true });
 
 		return json({ success: true, teamName: teamData.teamName });
 	} catch (err) {

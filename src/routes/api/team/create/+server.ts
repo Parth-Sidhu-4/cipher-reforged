@@ -43,6 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				members: [locals.user.uid],
 				level: 1,
 				completed: [],
+				banned: false, // 🔒 default
 				created: FieldValue.serverTimestamp()
 			});
 

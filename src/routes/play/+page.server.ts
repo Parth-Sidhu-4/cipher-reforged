@@ -6,17 +6,40 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw redirect(302, '/');
 
 	try {
+		// ✅ Game access control via config
+		const configSnap = await adminDB.collection('config').doc('gameStatus').get();
+		const configData = configSnap.data();
+		const now = new Date();
+
+		const forceClosed = configData?.forceClosed === true;
+		const activeFrom = configData?.activeFrom?.toDate?.();
+		const activeUntil = configData?.activeUntil?.toDate?.();
+
+		if (forceClosed || !activeFrom || !activeUntil || now < activeFrom || now > activeUntil) {
+			return { blocked: true };
+		}
+
 		const userDocSnap = await adminDB.collection('users').doc(locals.user.uid).get();
 		const userData = userDocSnap.data();
 
 		if (!userData) throw redirect(302, '/auth');
+
+		if (userData?.banned) {
+			throw error(403, JSON.stringify({ reason: 'banned' }));
+		}
+
 		if (!userData.team) throw redirect(302, '/team');
 
 		const displayName = userData.displayName ?? userData.email ?? 'Anonymous';
 
 		const teamDocSnap = await adminDB.collection('teams').doc(userData.team).get();
 		const teamData = teamDocSnap.data();
+
 		if (!teamData) throw redirect(302, '/team');
+
+		if (teamData?.banned) {
+			throw error(403, JSON.stringify({ reason: 'banned' }));
+		}
 
 		const completed = teamData.completedLevels ?? [];
 
@@ -27,11 +50,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 				uid: doc.id,
 				prompt: data?.prompt ?? '(No prompt)',
 				level: data?.level ?? 0,
-				hint: data?.hint ?? null // 👈 INCLUDE THIS LINE
+				hint: data?.hint ?? null
 			};
 		});
 
-		// ✅ Filter: only show completed + current question
 		const nextLevel = completed.length + 1;
 		const questions = allQuestions.filter(
 			(q) => completed.includes(q.uid) || q.level === nextLevel
@@ -46,6 +68,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		}));
 
 		return {
+			blocked: false,
 			user: locals.user,
 			displayName,
 			questions,
