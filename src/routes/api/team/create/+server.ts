@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { adminDB } from '$lib/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { updateTeamGSVStatus } from '$lib/utils/checkGSV';
 
 function generateCode(length = 6) {
 	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -60,6 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			},
 			{ merge: true }
 		);
+		await updateTeamGSVStatus(slug); // Call it with your team slug (ID)
 
 		return json({ success: true, teamName, code });
 	} catch (err) {

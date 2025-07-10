@@ -42,10 +42,6 @@
 			loading = false;
 		}
 	}
-
-	function goToPlay() {
-		window.location.href = '/play';
-	}
 </script>
 
 <h1 class="mb-4 text-2xl font-bold">Join a Team</h1>
@@ -64,8 +60,4 @@
 	<p class="mt-4 text-sm {success ? 'text-green-600' : 'text-red-500'}">
 		{message}
 	</p>
-{/if}
-
-{#if success}
-	<button class="btn btn-success mt-4" on:click={goToPlay}>Let’s Play</button>
 {/if}

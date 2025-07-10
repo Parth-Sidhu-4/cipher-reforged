@@ -24,10 +24,8 @@
 	</div>
 {:else}
 	<div class="flex min-h-screen flex-col items-center justify-center p-4 text-center">
-		<h1 class="mb-4 text-4xl font-bold text-red-600">🚫 Banned</h1>
-		<p class="mb-2 text-lg text-gray-700">
-			You or your team has been banned from participating in Cipher Reforged.
-		</p>
+		<h1 class="mb-4 text-4xl font-bold text-red-600">🚫 Something Went wrong</h1>
+		<p class="mb-2 text-lg text-gray-700">An unexpected error occurred.</p>
 		<p class="text-gray-500">If you believe this is a mistake, please contact the organizers.</p>
 	</div>
 {/if}

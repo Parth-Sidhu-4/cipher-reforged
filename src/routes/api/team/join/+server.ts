@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { adminDB } from '$lib/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { updateTeamGSVStatus } from '$lib/utils/checkGSV';
 
 const MAX_TEAM_SIZE = 3;
 
@@ -53,6 +54,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		// 3. Update user doc to link to this team
 		await adminDB.collection('users').doc(locals.user.uid).set({ team: slug }, { merge: true });
+
+		await updateTeamGSVStatus(slug); // Call it with your team slug (ID)
 
 		return json({ success: true, teamName: teamData.teamName });
 	} catch (err) {

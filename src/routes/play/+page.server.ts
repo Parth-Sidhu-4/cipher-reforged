@@ -3,7 +3,8 @@ import { redirect, error } from '@sveltejs/kit';
 import { adminDB } from '$lib/firebase/admin';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) throw redirect(302, '/');
+	// ✅ Redirect unauthenticated users to the auth page
+	if (!locals.user) throw redirect(302, '/auth');
 
 	try {
 		// ✅ Game access control via config
@@ -19,30 +20,26 @@ export const load: PageServerLoad = async ({ locals }) => {
 			return { blocked: true };
 		}
 
+		// ✅ Get user document
 		const userDocSnap = await adminDB.collection('users').doc(locals.user.uid).get();
 		const userData = userDocSnap.data();
 
 		if (!userData) throw redirect(302, '/auth');
-
-		if (userData?.banned) {
-			throw error(403, JSON.stringify({ reason: 'banned' }));
-		}
-
+		if (userData?.banned) throw error(403, JSON.stringify({ reason: 'banned' }));
 		if (!userData.team) throw redirect(302, '/team');
 
 		const displayName = userData.displayName ?? userData.email ?? 'Anonymous';
 
+		// ✅ Get team document
 		const teamDocSnap = await adminDB.collection('teams').doc(userData.team).get();
 		const teamData = teamDocSnap.data();
 
 		if (!teamData) throw redirect(302, '/team');
-
-		if (teamData?.banned) {
-			throw error(403, JSON.stringify({ reason: 'banned' }));
-		}
+		if (teamData?.banned) throw error(403, JSON.stringify({ reason: 'banned' }));
 
 		const completed = teamData.completedLevels ?? [];
 
+		// ✅ Fetch all questions
 		const questionsSnap = await adminDB.collection('questions').orderBy('level').get();
 		const allQuestions = questionsSnap.docs.map((doc) => {
 			const data = doc.data();
@@ -59,6 +56,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			(q) => completed.includes(q.uid) || q.level === nextLevel
 		);
 
+		// ✅ Load logs
 		const logsSnap = await adminDB.collection('logs').doc(userData.team).get();
 		const logsRaw = logsSnap.data()?.logs ?? [];
 

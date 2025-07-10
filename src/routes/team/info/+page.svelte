@@ -10,6 +10,7 @@
 		teamName: string;
 		code: string;
 		members: Member[];
+		gsv: boolean;
 	};
 
 	const { teamName, code, members } = data;
@@ -26,6 +27,12 @@
 </script>
 
 <h1 class="mb-4 text-2xl font-bold">Team: {teamName}</h1>
+<h1 class="mb-4 text-2xl font-bold">
+	Team: {teamName}
+	{#if !data.gsv}
+		<span class="ml-2 text-sm font-semibold text-red-500">(NON-GSV)</span>
+	{/if}
+</h1>
 
 <p class="mb-2">
 	<b>Team Code:</b>

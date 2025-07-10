@@ -1,6 +1,7 @@
 <script lang="ts">
 	import toast from 'svelte-5-french-toast';
-
+	import { ArrowRight, CheckCircle, CircleX, List, Lock } from 'lucide-svelte';
+	let logsModal: HTMLDialogElement | null = null;
 	type LogEntry = {
 		questionId: string;
 		entered: string;
@@ -26,13 +27,12 @@
 	const logs = data.logs ?? [];
 
 	$: if (current >= questions.length) current = questions.length - 1;
-
 	$: isCompleted = questions[current] ? completed.includes(questions[current].uid) : false;
-
 	$: currentLogs = questions[current]
 		? logs.filter((log) => log.questionId === questions[current].uid).reverse()
 		: [];
 
+	// Inject comment with hint
 	$: {
 		if (container && questions[current]?.hint) {
 			for (const node of Array.from(container.childNodes)) {
@@ -60,16 +60,16 @@
 			const result = await res.json();
 
 			if (result.correct) {
-				toast.success('Correct!');
+				toast.success('✅ Correct!');
 				answer = '';
 				if (!completed.includes(questions[current].uid)) {
 					completed = [...completed, questions[current].uid];
 				}
 			} else {
-				toast.error('Wrong. Give it another shot!');
+				toast.error('❌ Wrong. Try again.');
 			}
 		} catch {
-			toast.error('Error submitting answer.');
+			toast.error('⚠️ Error submitting answer.');
 		}
 		loading = false;
 	};
@@ -80,54 +80,88 @@
 	};
 </script>
 
+<title>Cipher Reforged - Play</title>
+
 {#if data.blocked}
-	<p class="mt-10 text-center text-xl font-semibold text-red-600">
-		🚫 You cannot view this right now.
-	</p>
-{:else if questions.length === 0}
-	<p class="mt-8 text-center text-gray-500">⚠️ No questions available.</p>
-{:else}
-	<h1 class="mb-2 text-2xl font-bold">Level {questions[current].level}</h1>
-
-	<!-- Question prompt -->
-	<div class="mb-4" bind:this={container}>
-		{@html questions[current].prompt}
+	<div class="flex min-h-screen items-center justify-center">
+		<p class="text-xl font-semibold text-red-600">🚫 You cannot view this right now.</p>
 	</div>
+{:else if questions.length === 0}
+	<div class="flex min-h-screen items-center justify-center">
+		<p class="text-gray-500">⚠️ No questions available.</p>
+	</div>
+{:else}
+	<div class="flex min-h-screen flex-col items-center justify-center space-y-6 p-6 text-center">
+		<h1 class="text-4xl font-bold">Level {questions[current].level}</h1>
 
-	<input
-		placeholder="your answer..."
-		class="input input-bordered mb-2 w-full max-w-md"
-		bind:value={answer}
-		on:input={handleInput}
-		disabled={isCompleted}
-	/>
+		<!-- Question prompt -->
+		<div class="prose dark:prose-invert max-w-2xl" bind:this={container}>
+			{@html questions[current].prompt}
+		</div>
 
-	<button on:click={submit} class="btn btn-primary" disabled={loading || isCompleted}>
-		{loading ? 'Checking...' : isCompleted ? 'Completed ✅' : 'Submit'}
-	</button>
+		<!-- Input -->
+		<input
+			type="text"
+			placeholder="Enter your answer..."
+			class="input input-bordered input-lg w-full max-w-md"
+			bind:value={answer}
+			on:input={handleInput}
+			disabled={isCompleted}
+		/>
 
-	{#if isCompleted && current < questions.length - 1}
-		<button on:click={() => current++} class="btn btn-outline mt-4"> Next Level → </button>
-	{/if}
+		<!-- Submit -->
+		{#if !isCompleted}
+			<button on:click={submit} class="btn btn-wide btn-primary" disabled={loading}>
+				{#if loading}
+					<span class="loading loading-ring text-white"></span>
+				{:else}
+					Submit
+				{/if}
+			</button>
+		{:else}
+			<button class="btn btn-wide btn-success" disabled>
+				<CheckCircle class="mr-2" size={20} />
+			</button>
 
-	{#if currentLogs.length > 0}
-		<h2 class="mt-6 text-lg font-semibold">Previous Attempts</h2>
-		<ul class="mt-2 max-w-md space-y-1">
-			{#each currentLogs as log}
-				<li class="flex items-center gap-2 text-sm">
-					<span class={log.correct ? 'text-green-600' : 'text-red-500'}>
-						{log.correct ? '✅' : '❌'}
-					</span>
-					<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800">{log.entered}</code>
-					<span class="text-xs text-gray-400">
-						{#if typeof log.timestamp === 'string'}
-							({new Date(log.timestamp).toLocaleString()})
-						{:else}
-							(Unknown time)
-						{/if}
-					</span>
-				</li>
-			{/each}
-		</ul>
-	{/if}
+			{#if current < questions.length - 1}
+				<button class="btn btn-wide btn-outline" on:click={() => current++}>
+					Next Level <ArrowRight class="ml-2" />
+				</button>
+			{/if}
+		{/if}
+
+		<!-- Logs -->
+		<!-- Logs Button -->
+		<button class="btn btn-outline mt-6" on:click={() => logsModal?.showModal()}>
+			View Previous Attempts
+		</button>
+
+		<!-- Logs Modal -->
+		<dialog id="logsModal" class="modal" bind:this={logsModal}>
+			<div class="modal-box border border-white/10 bg-[#1e1e20] text-white">
+				<form method="dialog">
+					<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2" aria-label="Close">
+						✕
+					</button>
+				</form>
+
+				<h3 class="mb-4 text-lg font-bold">Previous Attempts</h3>
+
+				{#if currentLogs.length === 0}
+					<p class="text-sm text-gray-400">No attempts yet.</p>
+				{:else}
+					{#each currentLogs as log}
+						<button class="btn btn-ghost mb-1 w-full justify-start">
+							{#if log.correct}
+								<CheckCircle class="text-green-500" />
+							{:else}
+								<CircleX class="text-red-500" />
+							{/if}
+							<span class="ml-2">{log.entered}</span>
+						</button>
+					{/each}
+				{/if}
+			</div>
+		</dialog>
+	</div>
 {/if}

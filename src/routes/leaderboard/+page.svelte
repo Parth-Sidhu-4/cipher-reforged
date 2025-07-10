@@ -22,7 +22,12 @@
 			{#each leaderboard as team, i}
 				<tr class="border-base-300 border-t">
 					<td>{i + 1}</td>
-					<td>{team.teamName}</td>
+					<td>
+						{team.teamName}
+						{#if !team.gsv}
+							<span class="ml-2 text-xs font-semibold text-red-500">(NON-GSV)</span>
+						{/if}
+					</td>
 					<td>{team.score}</td>
 					<td>{team.members}</td>
 					<td>
