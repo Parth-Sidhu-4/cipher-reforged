@@ -1,7 +1,7 @@
 <script lang="ts">
 	import toast from 'svelte-5-french-toast';
-	import { ArrowRight, CheckCircle, CircleX, List, Lock } from 'lucide-svelte';
-	let logsModal: HTMLDialogElement | null = null;
+	import { ArrowRight, CheckCircle, CircleX, History } from 'lucide-svelte';
+
 	type LogEntry = {
 		questionId: string;
 		entered: string;
@@ -14,23 +14,22 @@
 		user?: { uid: string };
 		questions?: { uid: string; prompt: string; level: number; hint?: string }[];
 		completed?: string[];
-		logs?: LogEntry[];
 	};
 
 	let current = 0;
 	let answer = '';
 	let loading = false;
+	let logsModal: HTMLDialogElement | null = null;
 	let container: HTMLDivElement | null = null;
 
 	const questions = data.questions ?? [];
 	let completed = data.completed ?? [];
-	const logs = data.logs ?? [];
+
+	let logs: LogEntry[] = [];
 
 	$: if (current >= questions.length) current = questions.length - 1;
 	$: isCompleted = questions[current] ? completed.includes(questions[current].uid) : false;
-	$: currentLogs = questions[current]
-		? logs.filter((log) => log.questionId === questions[current].uid).reverse()
-		: [];
+	$: currentLogs = logs.filter((log) => log.questionId === questions[current]?.uid).reverse();
 
 	// Inject comment with hint
 	$: {
@@ -44,6 +43,24 @@
 			container.appendChild(commentNode);
 		}
 	}
+
+	async function fetchAllLogs() {
+		if (!data.user?.uid) return;
+		try {
+			const res = await fetch(`/api/logs?userId=${data.user.uid}`);
+			if (res.ok) {
+				const result = await res.json();
+				logs = result.logs ?? [];
+			} else {
+				console.warn('⚠️ Failed to fetch logs');
+			}
+		} catch (e) {
+			console.error('⚠️ Error fetching logs', e);
+		}
+	}
+
+	// Fetch logs when current question changes
+	$: if (questions[current]?.uid) fetchAllLogs();
 
 	const submit = async () => {
 		if (!questions[current]) return;
@@ -68,8 +85,12 @@
 			} else {
 				toast.error('❌ Wrong. Try again.');
 			}
-		} catch {
+
+			// Re-fetch logs to ensure real-time update
+			await fetchAllLogs();
+		} catch (e) {
 			toast.error('⚠️ Error submitting answer.');
+			console.error(e);
 		}
 		loading = false;
 	};
@@ -130,10 +151,9 @@
 			{/if}
 		{/if}
 
-		<!-- Logs -->
 		<!-- Logs Button -->
 		<button class="btn btn-outline mt-6" on:click={() => logsModal?.showModal()}>
-			View Previous Attempts
+			<History class="mr-2" /> View Previous Attempts
 		</button>
 
 		<!-- Logs Modal -->

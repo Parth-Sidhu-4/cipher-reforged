@@ -27,7 +27,6 @@
 			if (res.ok) {
 				success = true;
 				message = `✅ Team "${result.teamName}" created! Code: ${result.code}`;
-				setTimeout(() => (window.location.href = '/play'), 1000);
 			} else {
 				message = result.error || 'Something went wrong.';
 			}
@@ -60,7 +59,6 @@
 			if (res.ok) {
 				success = true;
 				message = `✅ Joined team "${result.teamName}" successfully!`;
-				setTimeout(() => (window.location.href = '/play'), 1000);
 			} else {
 				message = result.error || 'Unable to join team.';
 			}
