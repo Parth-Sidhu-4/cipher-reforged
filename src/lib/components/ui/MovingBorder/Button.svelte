@@ -24,7 +24,7 @@
 			<!-- svelte-ignore element_invalid_self_closing_tag -->
 			<div
 				class={cn(
-					'h-20 w-20 bg-[radial-gradient(#40E0D0_40%,transparent_60%)] opacity-[0.8]',
+					'h-20 w-20 bg-[radial-gradient(#605DFF_40%,transparent_60%)] opacity-[0.8]',
 					borderClassName
 				)}
 			/>

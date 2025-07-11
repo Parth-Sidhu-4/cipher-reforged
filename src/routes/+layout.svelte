@@ -1,26 +1,36 @@
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { Toaster } from 'svelte-5-french-toast';
 	import '../app.css';
 	import { onMount } from 'svelte';
-	import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-	import { auth } from '$lib/utils/firebase';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { ArrowUpRight, Disc } from 'lucide-svelte';
+
+	import { firebaseApp } from '$lib/firebase/client';
+	import { auth } from '$lib/utils/firebase';
+	import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 	let loggedIn = false;
+	let hasTeam = false;
 
 	onMount(() => {
-		onAuthStateChanged(auth, (user) => {
+		onAuthStateChanged(auth, async (user) => {
 			loggedIn = !!user;
+
+			if (user) {
+				const res = await fetch('/auth/status');
+				const status = await res.json();
+				hasTeam = status.user?.hasTeam ?? false;
+			}
 		});
 	});
 
 	const logout = async () => {
 		try {
-			await signOut(auth); // Clears Firebase client session
-			await fetch('/api/logout', { method: 'POST' }); // Clears server session cookie
-			goto('/auth'); // Redirect to login page
+			await signOut(auth);
+			await fetch('/api/logout', { method: 'POST' });
+			goto('/auth');
 		} catch (err) {
 			console.error('Logout failed:', err);
 		}
@@ -30,45 +40,65 @@
 <div
 	class="min-h-screen bg-gradient-to-br from-[#170e27] via-[#10102c] to-[#0d0d0e] font-sans text-[#cccccc]"
 >
-	<header class="navbar border-b border-white/10 bg-[#1a1a1d]/80 px-4 py-2 shadow-md backdrop-blur">
-		<nav class="flex items-center gap-3 text-sm">
+	<!-- Navbar styled like Code 2 -->
+	{#if ['/', '/leaderboard', '/team'].includes($page.url.pathname)}
+		<div
+			class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
+		>
+			<a class="btn btn-ghost text-md" class:text-primary={$page.url.pathname === '/'} href="/">
+				<ArrowUpRight class="mr-1" /> Home
+			</a>
 			<a
-				href="/"
-				class="rounded-lg px-3 py-1 text-white transition-all duration-200 hover:bg-[#a970ff33] hover:text-[#a970ff]"
-				>Home</a
-			>
-			<a
+				class="btn btn-ghost text-md"
+				class:text-primary={$page.url.pathname === '/leaderboard'}
 				href="/leaderboard"
-				class="rounded-lg px-3 py-1 text-white transition-all duration-200 hover:bg-[#a970ff33] hover:text-[#a970ff]"
-				>Leaderboard</a
 			>
-			<a
-				href="/team/info"
-				class="rounded-lg px-3 py-1 text-white transition-all duration-200 hover:bg-[#a970ff33] hover:text-[#a970ff]"
-				>Team</a
-			>
-			<a
-				href="/profile"
-				class="rounded-lg px-3 py-1 text-white transition-all duration-200 hover:bg-[#a970ff33] hover:text-[#a970ff]"
-				>Profile</a
-			>
+				<ArrowUpRight class="mr-1" /> Leaderboard
+			</a>
 			{#if loggedIn}
-				<div class="navbar-end">
-					<button
-						on:click={logout}
-						class="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-					>
-						Logout
-					</button>
-				</div>
+				<a
+					class="btn btn-ghost text-md"
+					class:text-primary={$page.url.pathname === '/team/info'}
+					href="/team/info"
+				>
+					<ArrowUpRight class="mr-1" /> Team
+				</a>
 			{/if}
-		</nav>
-		<!-- Right side logout button -->
-	</header>
+			{#if loggedIn}
+				<a
+					class="btn btn-ghost text-md"
+					class:text-primary={$page.url.pathname === '/profile'}
+					href="/profile"
+				>
+					<ArrowUpRight class="mr-1" /> Profile
+				</a>
+			{/if}
+			{#if loggedIn && hasTeam}
+				<a class="btn btn-ghost text-md" href="/play">
+					<Disc class="mr-1" /> Play
+				</a>
+			{/if}
+
+			{#if loggedIn}
+				<button on:click={logout} class="btn btn-sm ml-auto bg-red-500 text-white hover:bg-red-600">
+					Logout
+				</button>
+			{/if}
+		</div>
+	{:else if $page.url.pathname === '/ready'}
+		<div
+			class="navbar z-50 border-b border-white/10 bg-[#1a1a1d]/80 px-4 py-2 shadow-md backdrop-blur"
+		>
+			<a class="btn btn-ghost text-md" href="/">
+				<ArrowUpRight class="mr-1" /> Home
+			</a>
+		</div>
+	{/if}
 
 	<main class="px-6 py-10">
 		<slot />
 	</main>
 
+	<!-- Toasts (Code 1) -->
 	<Toaster position="top-right" />
 </div>

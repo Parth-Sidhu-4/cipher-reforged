@@ -71,7 +71,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 			displayName,
 			questions,
 			completed,
-			logs
+			logs,
+			locals: {
+				userId: locals.user.uid,
+				userTeam: userData.team // ✅ ADD THIS LINE
+			}
 		};
 	} catch (err) {
 		console.error('🔥 Error in /play load:', err);

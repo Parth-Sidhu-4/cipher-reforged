@@ -50,6 +50,7 @@
 		"@motionone/svelte": "^10.16.4",
 		"@tabler/icons-svelte": "^3.34.0",
 		"bits-ui": "^2.8.10",
+		"clsx": "^2.1.1",
 		"dotenv": "^17.1.0",
 		"firebase": "^11.10.0",
 		"firebase-admin": "^13.4.0",

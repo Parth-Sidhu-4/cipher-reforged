@@ -99,7 +99,7 @@
 								<div class="badge badge-error badge-outline">Non-GSV</div>
 							{/if}
 							{#if team.teamName === 'Organizers'}
-								<div class="badge badge-success badge-outline">Event Heads</div>
+								<div class="badge badge-success badge-outline">Boss</div>
 							{/if}
 						</td>
 						<td>{team.members}</td>

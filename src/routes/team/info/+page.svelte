@@ -1,7 +1,21 @@
 <script lang="ts">
 	import { sendSuccessToast, sendErrorToast } from '$lib/utils/toast_utils';
 	import { Button } from '$lib/components/ui/MovingBorder';
-	import { Hammer } from 'lucide-svelte';
+	import {
+		Hammer,
+		ArrowLeft,
+		ArrowRight,
+		ArrowUpRight,
+		CheckCircle,
+		History,
+		Disc
+	} from 'lucide-svelte';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+
+	import { auth } from '$lib/utils/firebase';
+	import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 	type Member = {
 		uid: string;
@@ -22,6 +36,25 @@
 
 	let clicked = false;
 	let loading = false;
+	let loggedIn = false;
+	let hasTeam = true;
+
+	onMount(() => {
+		onAuthStateChanged(auth, (user) => {
+			loggedIn = !!user;
+			hasTeam = true; // You can set this dynamically if needed
+		});
+	});
+
+	const logout = async () => {
+		try {
+			await signOut(auth);
+			await fetch('/api/logout', { method: 'POST' });
+			goto('/auth');
+		} catch (err) {
+			console.error('Logout failed:', err);
+		}
+	};
 
 	const copyCode = async () => {
 		try {
@@ -54,65 +87,118 @@
 	};
 </script>
 
-<title>Cipher Reforged - Your Team</title>
-
-<h2
-	class="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 bg-clip-text py-4 text-center text-3xl font-medium tracking-tight text-transparent"
+<!-- Navbar -->
+<div
+	class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
 >
-	Your team
-</h2>
-
-<center>
-	<p
-		class="to-primary relative z-10 bg-gradient-to-b from-neutral-200 bg-clip-text pb-[1vh] text-center font-sans text-6xl font-bold text-transparent"
+	<a class="btn btn-ghost text-md" class:text-primary={$page.url.pathname === '/'} href="/">
+		<ArrowUpRight class="mr-1" /> Home
+	</a>
+	<a
+		class="btn btn-ghost text-md"
+		class:text-primary={$page.url.pathname === '/leaderboard'}
+		href="/leaderboard"
 	>
-		{teamName}
-		{#if !gsv}
-			<span class="ml-3 align-middle text-sm font-semibold text-red-500">(NON-GSV)</span>
-		{/if}
-	</p>
+		<ArrowUpRight class="mr-1" /> Leaderboard
+	</a>
 
-	<Button
-		borderRadius="0.75rem"
-		className="bg-white-300 text-white border-slate-800 text-lg font-medium font-mono"
-		on:click={copyCode}
-	>
-		{#if clicked}
-			Copied!
-		{:else}
-			{code}
-		{/if}
-	</Button>
-
-	<p class="text-primary mt-4 font-sans text-lg font-medium">Members {members.length}/3</p>
-</center>
-
-<center>
-	<div class="w-[50%]">
-		<div class="overflow-x-auto">
-			{#each members as member}
-				<p class="mt-2 text-xl font-medium">
-					{#if member?.isLeader}
-						👑 <span class="font-bold">{member.displayName}</span>
-					{:else}
-						{member.displayName}
-					{/if}
-				</p>
-			{/each}
-		</div>
-	</div>
-
-	{#if !banned}
-		<button
-			class="btn btn-wide btn-outline btn-primary mt-10"
-			disabled={loading}
-			on:click={leaveTeam}
+	{#if loggedIn}
+		<a
+			class="btn btn-ghost text-md"
+			class:text-primary={$page.url.pathname === '/team/info'}
+			href="/team/info"
 		>
-			Leave team
-		</button>
-	{:else}
-		<button class="btn btn-ghost text-primary mt-4 text-xl font-bold">
-			<Hammer class="mr-2 inline-block" /> Your team was banned by an admin
+			<ArrowUpRight class="mr-1" /> Team
+		</a>
+		<a
+			class="btn btn-ghost text-md"
+			class:text-primary={$page.url.pathname === '/profile'}
+			href="/profile"
+		>
+			<ArrowUpRight class="mr-1" /> Profile
+		</a>
+
+		{#if hasTeam}
+			<a class="btn btn-ghost text-md" href="/play">
+				<Disc class="mr-1" /> Play
+			</a>
+		{/if}
+
+		<button on:click={logout} class="btn btn-sm ml-auto bg-red-500 text-white hover:bg-red-600">
+			Logout
 		</button>
 	{/if}
-</center>
+</div>
+
+<!-- Main Page Content -->
+<div class="pt-20">
+	<title>Cipher Reforged - Your Team</title>
+
+	<h2
+		class="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 bg-clip-text py-4 text-center text-3xl font-medium tracking-tight text-transparent"
+	>
+		Your team
+	</h2>
+
+	<center>
+		<div
+			class="to-primary relative z-10 flex flex-col items-center justify-center bg-gradient-to-b from-neutral-200 bg-clip-text pb-[1vh] text-center font-sans text-6xl font-bold text-transparent"
+		>
+			<span>{teamName}</span>
+			<div class="mt-2 flex flex-wrap justify-center gap-2">
+				{#if !gsv}
+					<div class="badge badge-error badge-outline">Non-GSV</div>
+				{/if}
+				{#if teamName === 'Organizers'}
+					<div class="badge badge-success badge-outline">Boss</div>
+				{/if}
+			</div>
+		</div>
+
+		<Button
+			borderRadius="0.75rem"
+			className="bg-white-300 text-white border-slate-800 text-lg font-medium font-mono"
+			on:click={copyCode}
+		>
+			{#if clicked}
+				Copied!
+			{:else}
+				{code}
+			{/if}
+		</Button>
+
+		<p class="text-primary mt-4 font-sans text-lg font-medium">
+			Members {members.length}/3
+		</p>
+	</center>
+
+	<center>
+		<div class="w-[50%]">
+			<div class="overflow-x-auto">
+				{#each members as member}
+					<p class="mt-2 text-xl font-medium">
+						{#if member?.isLeader}
+							👑 <span class="font-bold">{member.displayName}</span>
+						{:else}
+							{member.displayName}
+						{/if}
+					</p>
+				{/each}
+			</div>
+		</div>
+
+		{#if !banned}
+			<button
+				class="btn btn-wide btn-outline btn-primary mt-10"
+				disabled={loading}
+				on:click={leaveTeam}
+			>
+				Leave team
+			</button>
+		{:else}
+			<button class="btn btn-ghost text-primary mt-4 text-xl font-bold">
+				<Hammer class="mr-2 inline-block" /> Your team was banned by an admin
+			</button>
+		{/if}
+	</center>
+</div>

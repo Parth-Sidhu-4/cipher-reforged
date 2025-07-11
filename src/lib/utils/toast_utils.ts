@@ -1,21 +1,17 @@
-import { toasts } from 'svelte-toasts';
+import toast from 'svelte-5-french-toast';
 
 export const sendErrorToast = (title: string, message: string) => {
-	const toast = toasts.add({
-		title,
-		description: message,
+	toast.error(`${title} - ${message}`, {
 		duration: 5000,
-		type: 'error',
-		theme: 'dark'
+		position: 'top-right',
+		className: 'dark-toast'
 	});
 };
 
 export const sendSuccessToast = (title: string, message: string) => {
-	const toast = toasts.add({
-		title,
-		description: message,
+	toast.success(`${title} - ${message}`, {
 		duration: 5000,
-		type: 'success',
-		theme: 'dark'
+		position: 'top-right',
+		className: 'dark-toast'
 	});
 };

@@ -5,8 +5,10 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { ArrowUpRight, Disc } from 'lucide-svelte';
+	import { tick } from 'svelte';
+	import { writable } from 'svelte/store';
 
-	let progVal = 0;
+	let progVal = 100;
 	let isAuthLoading = false;
 	let isLoggedIn = false;
 	let hasTeam = false;
@@ -70,46 +72,6 @@
 	};
 </script>
 
-<!-- ✅ Navbar -->
-<div
-	class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
->
-	<a class="btn btn-ghost text-md" class:text-primary={$page.url.pathname === '/'} href="/">
-		<ArrowUpRight class="mr-1" /> Home
-	</a>
-	<a
-		class="btn btn-ghost text-md"
-		class:text-primary={$page.url.pathname === '/leaderboard'}
-		href="/leaderboard"
-	>
-		<ArrowUpRight class="mr-1" /> Leaderboard
-	</a>
-	{#if isLoggedIn}
-		<a
-			class="btn btn-ghost text-md"
-			class:text-primary={$page.url.pathname === '/team/info'}
-			href="/team/info"
-		>
-			<ArrowUpRight class="mr-1" /> Team
-		</a>
-		<a
-			class="btn btn-ghost text-md"
-			class:text-primary={$page.url.pathname === '/profile'}
-			href="/profile"
-		>
-			<ArrowUpRight class="mr-1" /> Profile
-		</a>
-		{#if hasTeam}
-			<a class="btn btn-ghost text-md" href="/play">
-				<Disc class="mr-1" /> Play
-			</a>
-		{/if}
-		<button on:click={logout} class="btn btn-sm ml-auto bg-red-500 text-white hover:bg-red-600">
-			Logout
-		</button>
-	{/if}
-</div>
-
 <!-- ✅ Main UI -->
 <h2
 	class="mt-24 bg-gradient-to-br from-slate-300 to-slate-500 bg-clip-text py-4 text-center text-7xl font-medium tracking-tight text-transparent"
@@ -130,7 +92,7 @@
 </center>
 
 <center>
-	<h2 class="mt-4 mb-2 font-sans text-4xl">Create your account</h2>
+	<h2 class="mt-4 mb-2 font-sans text-4xl">You're all set!</h2>
 	<p class="mb-4 font-medium">
 		Use your <b>GSV Email ID</b>.<br />
 		If you don't have one, you can still play but you won't be considered for the prizes.
@@ -179,6 +141,13 @@
 				<button class="btn btn-info w-full" on:click={() => goto('/team')}>
 					Join or Create a Team
 				</button>
+			{/if}
+			{#if isLoggedIn}
+				<div class="mt-4 flex justify-center">
+					<button on:click={logout} class="btn btn-sm bg-red-500 text-white hover:bg-red-600">
+						Logout
+					</button>
+				</div>
 			{/if}
 		</div>
 	{/if}

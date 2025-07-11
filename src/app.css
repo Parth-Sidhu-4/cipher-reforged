@@ -1,2 +1,24 @@
 @import 'tailwindcss';
 @plugin "daisyui";
+
+.dark-toast {
+	background-color: #1e1e20 !important;
+	color: #cccccc !important;
+	border: 1px solid #444 !important;
+}
+/* Dark toast style override for svelte-5-french-toast */
+[data-sonner-toast] {
+	background-color: #1a1a1d !important;
+	color: #cccccc !important;
+	border: 1px solid #333 !important;
+	box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+}
+
+[data-sonner-toast] [data-title] {
+	font-weight: 600;
+	color: #ffffff !important;
+}
+
+[data-sonner-toast] [data-description] {
+	color: #aaaaaa !important;
+}

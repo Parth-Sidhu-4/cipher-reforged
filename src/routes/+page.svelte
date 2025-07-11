@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/MovingBorder/Button.svelte';
 	import { goto } from '$app/navigation';
+	import GradientAnimation from '$lib/components/ui/GradientAnimation/GradientAnimation.svelte';
 
 	let showRules = false;
 
@@ -8,12 +9,13 @@
 		const res = await fetch('/auth/status');
 		const data = await res.json();
 
+		console.log('User status:', data); // 👈 log it
 		if (!data.user) {
-			goto('/auth'); // not signed in
-		} else if (!data.user.hasTeam) {
-			goto('/team'); // no team yet
+			console.log('Redirecting to /auth');
+			goto('/auth');
 		} else {
-			goto('/play'); // already has a team
+			console.log('Redirecting to /ready');
+			goto('/ready');
 		}
 	};
 </script>
@@ -37,14 +39,14 @@
 			<div class="mt-6 flex justify-center gap-4">
 				<Button
 					borderRadius="0.75rem"
-					className="border-slate-800 bg-white-300 text-sm font-bold text-white"
+					className="cursor-pointer border-slate-800 bg-white-300 text-sm font-bold text-white"
 					on:click={handleGo}
 				>
 					Let's Go
 				</Button>
 				<Button
 					borderRadius="0.75rem"
-					className="border-slate-800 bg-white-300 text-sm font-bold text-white"
+					className="cursor-pointer border-slate-800 bg-white-300 text-sm font-bold text-white"
 					on:click={() => (showRules = true)}
 					style="pointer-events: auto;"
 				>
@@ -57,7 +59,7 @@
 			<div class="mt-6 flex justify-center">
 				<Button
 					borderRadius="0.75rem"
-					className="border-slate-800 bg-white-300 text-sm font-bold text-white"
+					className="cursor-pointer border-slate-800 bg-white-300 text-sm font-bold text-white"
 					on:click={() => (showRules = false)}
 					style="pointer-events: auto;"
 				>
