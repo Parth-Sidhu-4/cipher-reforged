@@ -53,14 +53,13 @@
 		"bits-ui": "^2.8.10",
 		"clsx": "^2.1.1",
 		"dotenv": "^17.1.0",
-		"firebase": "^11.10.0",
+		"firebase": "^9.23.0",
 		"firebase-admin": "^13.4.0",
 		"lucide-svelte": "^0.525.0",
 		"svelte-5-french-toast": "^2.0.4",
 		"svelte-countdown": "^1.1.2",
 		"svelte-inview": "^4.0.4",
 		"svelte-toasts": "^1.1.2",
-		"sveltefire": "^0.4.5",
 		"tailwind-merge": "^3.3.1",
 		"tailwind-variants": "^1.0.0"
 	}
