@@ -101,6 +101,8 @@
 	};
 </script>
 
+<title>Cipher Reforged - Play</title>
+
 {#if data.blocked || questions.length === 0}
 	<div class="flex min-h-screen items-center justify-center">
 		<p class="text-xl font-semibold text-red-600">🚫 You cannot view this right now.</p>

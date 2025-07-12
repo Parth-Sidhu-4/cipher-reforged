@@ -5,13 +5,14 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { Disc, ArrowUpRight } from 'lucide-svelte';
+	import { Disc, ArrowUpRight, CheckCircle } from 'lucide-svelte';
 
 	let user: User | null = null;
 	let displayName = '';
 	let message = '';
 	let loading = false;
 	let loggedIn = false;
+	let success = false;
 
 	onMount(() => {
 		if (!browser) return;
@@ -35,7 +36,7 @@
 		try {
 			await signOut(auth);
 			await fetch('/api/logout', { method: 'POST' });
-			goto('/auth');
+			goto('/');
 		} catch (err) {
 			console.error('Logout failed:', err);
 		}
@@ -44,11 +45,13 @@
 	const updateName = async () => {
 		if (!user) {
 			message = '❌ You must be signed in to update your name.';
+			success = false;
 			return;
 		}
 
 		if (!displayName.trim()) {
 			message = 'Name cannot be empty.';
+			success = false;
 			return;
 		}
 
@@ -61,16 +64,29 @@
 			});
 
 			const result = await res.json();
-			message = res.ok ? '✅ Name updated!' : result.error || 'Failed to update.';
+			if (res.ok) {
+				message = '✅ Name updated!';
+				success = true;
+			} else {
+				message = result.error || 'Failed to update.';
+				success = false;
+			}
 		} catch (err) {
 			console.error(err);
 			message = 'Something went wrong.';
+			success = false;
 		} finally {
 			loading = false;
+
+			// auto dismiss message after 3s
+			setTimeout(() => {
+				message = '';
+			}, 3000);
 		}
 	};
 </script>
 
+<title>Cipher Reforged - Profile</title>
 <!-- Navbar -->
 <div
 	class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
@@ -112,24 +128,43 @@
 </div>
 
 <!-- Page Content -->
-<div class="px-6 pt-20">
+<div class="px-6 pt-24">
 	<h1 class="mb-4 text-2xl font-bold">Set Your Display Name</h1>
 
 	{#if user}
-		<input
-			class="input input-bordered mb-2 w-full max-w-md"
-			bind:value={displayName}
-			placeholder="Enter your name"
-		/>
+		<div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+			<input
+				class="input input-bordered w-full max-w-md"
+				bind:value={displayName}
+				placeholder="Enter your name"
+			/>
 
-		<button class="btn btn-primary" on:click={updateName} disabled={loading}>
-			{loading ? 'Saving...' : 'Save'}
-		</button>
+			<button class="btn btn-primary whitespace-nowrap" on:click={updateName} disabled={loading}>
+				{loading ? 'Saving...' : 'Save'}
+			</button>
+		</div>
 	{:else}
 		<p class="mb-4 font-medium text-red-500">⚠️ You must be signed in to set a display name.</p>
 	{/if}
-
-	{#if message}
-		<p class="mt-4 text-sm">{message}</p>
-	{/if}
 </div>
+
+<!-- Floating Fancy Message -->
+{#if message}
+	<div
+		class={`fixed top-6 left-1/2 z-50 w-[90vw] max-w-md -translate-x-1/2 transform rounded-xl px-6 py-4 text-sm shadow-lg transition-all duration-300
+		${
+			success
+				? 'border border-indigo-300 bg-gradient-to-br from-indigo-700 to-violet-600 text-white'
+				: 'border border-rose-300 bg-gradient-to-br from-rose-800 to-red-600 text-white'
+		}`}
+	>
+		<div class="flex items-center gap-3 font-semibold">
+			{#if success}
+				<CheckCircle class="h-5 w-5 text-yellow-300" />
+			{:else}
+				<span>⚠️</span>
+			{/if}
+			<span>{message}</span>
+		</div>
+	</div>
+{/if}

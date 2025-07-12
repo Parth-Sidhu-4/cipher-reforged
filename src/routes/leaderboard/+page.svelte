@@ -54,7 +54,7 @@
 	};
 </script>
 
-<title>Cipher reforged-Leaderboard</title>
+<title>Cipher Reforged-Leaderboard</title>
 
 <h2
 	class="to-primary mt-8 bg-gradient-to-br from-slate-300 bg-clip-text py-4 text-center text-7xl font-medium tracking-tight text-transparent"

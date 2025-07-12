@@ -57,6 +57,7 @@
 		"lucide-svelte": "^0.525.0",
 		"svelte-5-french-toast": "^2.0.4",
 		"svelte-countdown": "^1.1.2",
+		"svelte-inview": "^4.0.4",
 		"svelte-toasts": "^1.1.2",
 		"sveltefire": "^0.4.5",
 		"tailwind-merge": "^3.3.1",

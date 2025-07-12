@@ -16,6 +16,7 @@
 
 	import { auth } from '$lib/utils/firebase';
 	import { onAuthStateChanged, signOut } from 'firebase/auth';
+	import GradientAnimation from '$lib/components/ui/GradientAnimation/GradientAnimation.svelte';
 
 	type Member = {
 		uid: string;
@@ -50,7 +51,7 @@
 		try {
 			await signOut(auth);
 			await fetch('/api/logout', { method: 'POST' });
-			goto('/auth');
+			goto('/');
 		} catch (err) {
 			console.error('Logout failed:', err);
 		}
@@ -76,6 +77,9 @@
 			});
 			if (r.ok) {
 				sendSuccessToast('Successfully Left', '');
+				setTimeout(() => {
+					window.location.href = '/';
+				}, 1000); // Give user a moment to see the toast
 			} else {
 				sendErrorToast('Failed to Leave', '');
 			}
@@ -87,6 +91,8 @@
 	};
 </script>
 
+<title>Cipher Reforged - Team Info</title>
+<GradientAnimation />
 <!-- Navbar -->
 <div
 	class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
@@ -103,6 +109,7 @@
 	</a>
 
 	{#if loggedIn}
+		<GradientAnimation />
 		<a
 			class="btn btn-ghost text-md"
 			class:text-primary={$page.url.pathname === '/team/info'}
@@ -157,7 +164,7 @@
 
 		<Button
 			borderRadius="0.75rem"
-			className="bg-white-300 text-white border-slate-800 text-lg font-medium font-mono"
+			className="cursor-pointer bg-white-300 text-white border-slate-800 text-lg font-medium font-mono"
 			on:click={copyCode}
 		>
 			{#if clicked}

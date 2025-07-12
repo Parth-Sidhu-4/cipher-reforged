@@ -21,5 +21,7 @@
 	};
 </script>
 
+<title>Cipher Reforged - Sign In</title>
+
 <h1 class="mb-4 text-2xl font-semibold">Sign in</h1>
 <button class="btn btn-primary" on:click={loginWithGoogle}>Sign in with Google</button>

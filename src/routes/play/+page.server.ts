@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const userData = userDocSnap.data();
 
 		if (!userData) throw redirect(302, '/auth');
-		if (userData?.banned) throw error(403, JSON.stringify({ reason: 'banned' }));
+		if (userData?.banned) throw error(986, 'banned');
 		if (!userData.team) throw redirect(302, '/team');
 
 		const displayName = userData.displayName ?? userData.email ?? 'Anonymous';
@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const teamData = teamDocSnap.data();
 
 		if (!teamData) throw redirect(302, '/team');
-		if (teamData?.banned) throw error(403, JSON.stringify({ reason: 'banned' }));
+		if (teamData?.banned) throw error(987, 'banned');
 
 		const completed = teamData.completedLevels ?? [];
 
@@ -71,11 +71,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			displayName,
 			questions,
 			completed,
-			logs,
-			locals: {
-				userId: locals.user.uid,
-				userTeam: userData.team // ✅ ADD THIS LINE
-			}
+			logs
 		};
 	} catch (err) {
 		console.error('🔥 Error in /play load:', err);

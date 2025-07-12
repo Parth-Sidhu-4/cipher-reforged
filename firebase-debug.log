@@ -1,0 +1,162 @@
+[debug] [2025-07-12T17:58:31.615Z] ----------------------------------------------------------------------
+[debug] [2025-07-12T17:58:31.622Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init functions
+[debug] [2025-07-12T17:58:31.623Z] CLI Version:   14.10.1
+[debug] [2025-07-12T17:58:31.623Z] Platform:      win32
+[debug] [2025-07-12T17:58:31.623Z] Node Version:  v22.15.1
+[debug] [2025-07-12T17:58:31.624Z] Time:          Sat Jul 12 2025 23:28:31 GMT+0530 (India Standard Time)
+[debug] [2025-07-12T17:58:31.624Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-12T17:58:32.107Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-12T17:58:32.108Z] > authorizing via signed-in user (parthecstasy@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\cipher-reforged\cipher-reforged
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-07-12T17:58:37.384Z] Using project from CLI flag: cipher-reforged
+[debug] [2025-07-12T17:58:37.386Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:37.386Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:37.389Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/cipher-reforged [none]
+[debug] [2025-07-12T17:58:37.923Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/cipher-reforged 200
+[debug] [2025-07-12T17:58:37.923Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/cipher-reforged {"projectId":"cipher-reforged","projectNumber":"215368973502","displayName":"cipher-reforged","name":"projects/cipher-reforged","resources":{"hostingSite":"cipher-reforged"},"state":"ACTIVE","etag":"1_4875fa9c-3fc8-44fe-b9e5-017b7ec499a4"}
+[info] i  Using project cipher-reforged (cipher-reforged) 
+[info] 
+=== Functions Setup
+[debug] [2025-07-12T17:58:37.930Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-12T17:58:37.931Z] > authorizing via signed-in user (parthecstasy@gmail.com)
+[debug] [2025-07-12T17:58:37.931Z] [iam] checking project cipher-reforged for permissions ["firebase.projects.get"]
+[debug] [2025-07-12T17:58:37.931Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:37.931Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:37.931Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions [none]
+[debug] [2025-07-12T17:58:37.931Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions x-goog-quota-user=projects/cipher-reforged
+[debug] [2025-07-12T17:58:37.931Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-07-12T17:58:39.512Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions 200
+[debug] [2025-07-12T17:58:39.512Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-07-12T17:58:39.513Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:39.513Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:39.513Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:39.513Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:39.514Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-07-12T17:58:39.514Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/cipher-reforged
+[debug] [2025-07-12T17:58:39.515Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-07-12T17:58:39.515Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/cipher-reforged
+[debug] [2025-07-12T17:58:41.390Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/runtimeconfig.googleapis.com 200
+[debug] [2025-07-12T17:58:41.391Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-07-12T17:58:41.410Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com 200
+[debug] [2025-07-12T17:58:41.410Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-07-12T17:58:41.411Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:41.411Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:58:41.411Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com:enable [none]
+[debug] [2025-07-12T17:58:41.411Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com:enable x-goog-quota-user=projects/cipher-reforged
+[debug] [2025-07-12T17:58:43.329Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com:enable 200
+[debug] [2025-07-12T17:58:43.329Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/cipher-reforged/services/cloudfunctions.googleapis.com:enable [omitted]
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] +  Wrote functions/requirements.txt 
+[info] +  Wrote functions/.gitignore 
+[info] +  Wrote functions/main.py 
+[debug] [2025-07-12T17:59:07.010Z] Running command with virtualenv: command="D:\cipher-reforged\cipher-reforged\functions\venv\Scripts\activate.bat", args=["","&&","pip3","install","--upgrade","pip"]
+[debug] [2025-07-12T17:59:11.758Z] Error: spawn "D:\cipher-reforged\cipher-reforged\functions\venv\Scripts\activate.bat" ENOENT
+    at notFoundError (C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:6:26)
+    at verifyENOENT (C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:40:16)
+    at cp.emit (C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:27:25)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-07-12T17:59:53.526Z] ----------------------------------------------------------------------
+[debug] [2025-07-12T17:59:53.528Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init functions
+[debug] [2025-07-12T17:59:53.528Z] CLI Version:   14.10.1
+[debug] [2025-07-12T17:59:53.528Z] Platform:      win32
+[debug] [2025-07-12T17:59:53.528Z] Node Version:  v22.15.1
+[debug] [2025-07-12T17:59:53.529Z] Time:          Sat Jul 12 2025 23:29:53 GMT+0530 (India Standard Time)
+[debug] [2025-07-12T17:59:53.529Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-12T17:59:53.660Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-12T17:59:53.661Z] > authorizing via signed-in user (parthecstasy@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\cipher-reforged\cipher-reforged
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-07-12T17:59:57.180Z] Using project from CLI flag: cipher-reforged
+[debug] [2025-07-12T17:59:57.183Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:59:57.183Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:59:57.186Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/cipher-reforged [none]
+[debug] [2025-07-12T17:59:57.692Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/cipher-reforged 200
+[debug] [2025-07-12T17:59:57.692Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/cipher-reforged {"projectId":"cipher-reforged","projectNumber":"215368973502","displayName":"cipher-reforged","name":"projects/cipher-reforged","resources":{"hostingSite":"cipher-reforged"},"state":"ACTIVE","etag":"1_4875fa9c-3fc8-44fe-b9e5-017b7ec499a4"}
+[info] i  Using project cipher-reforged (cipher-reforged) 
+[info] 
+=== Functions Setup
+[debug] [2025-07-12T17:59:57.699Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-12T17:59:57.699Z] > authorizing via signed-in user (parthecstasy@gmail.com)
+[debug] [2025-07-12T17:59:57.699Z] [iam] checking project cipher-reforged for permissions ["firebase.projects.get"]
+[debug] [2025-07-12T17:59:57.700Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:59:57.700Z] Checked if tokens are valid: true, expires at: 1752344419799
+[debug] [2025-07-12T17:59:57.700Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions [none]
+[debug] [2025-07-12T17:59:57.700Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions x-goog-quota-user=projects/cipher-reforged
+[debug] [2025-07-12T17:59:57.700Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-07-12T17:59:59.169Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions 200
+[debug] [2025-07-12T17:59:59.169Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/cipher-reforged:testIamPermissions {"permissions":["firebase.projects.get"]}
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] i  functions/requirements.txt is unchanged 
+[info] i  functions/.gitignore is unchanged 
+[info] i  functions/main.py is unchanged 
+[debug] [2025-07-12T18:00:04.698Z] Running command with virtualenv: command="D:\cipher-reforged\cipher-reforged\functions\venv\Scripts\activate.bat", args=["","&&","pip3","install","--upgrade","pip"]
+[debug] [2025-07-12T18:00:06.387Z] Error: spawn "D:\cipher-reforged\cipher-reforged\functions\venv\Scripts\activate.bat" ENOENT
+    at notFoundError (C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:6:26)
+    at verifyENOENT (C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:40:16)
+    at cp.emit (C:\Users\parth\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:27:25)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+[error] 
+[error] Error: An unexpected error has occurred.

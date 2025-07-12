@@ -1,71 +1,90 @@
 <script lang="ts">
-	import { cn } from '$lib/utils/cn';
 	import { onMount } from 'svelte';
+	import { cn } from '$lib/utils/cn';
 
-	export let gradientBackgroundStart: string | null = 'rgb(108, 0, 162)';
-	export let gradientBackgroundEnd: string | null = 'rgb(0, 17, 82)';
-	export let firstColor: string | null = '18, 113, 255';
-	export let secondColor: string | null = '221, 74, 255';
-	export let thirdColor: string | null = '100, 220, 255';
-	export let fourthColor: string | null = '200, 50, 50';
-	export let fifthColor: string | null = '180, 180, 50';
-	export let pointerColor: string | null = '140, 100, 255';
-	export let size: string | null = '80%';
-	export let blendingValue: string | null = 'hard-light';
+	export let gradientBackgroundStart = 'rgb(23, 14, 39)';
+	export let gradientBackgroundEnd = 'rgb(13, 13, 14)';
+
+	export let firstColor = '40, 20, 70';
+	export let secondColor = '60, 30, 100';
+	export let thirdColor = '35, 40, 80';
+	export let fourthColor = '50, 20, 80';
+	export let fifthColor = '45, 35, 100';
+	export let pointerColor = '70, 50, 130';
+
+	export let size = '6%';
+	export let blendingValue = 'hard-light';
 	export let className: string | undefined = undefined;
-	export let interactive: boolean | undefined = true;
 	export let containerClassName: string | undefined = undefined;
+	export let interactive: boolean = true;
 
 	let interactiveRef: HTMLDivElement;
-
 	let curX = 0;
 	let curY = 0;
 	let tgX = 0;
 	let tgY = 0;
-
-	$: (tgX || tgY, updateGradient());
+	let animationFrame: number;
 
 	onMount(() => {
-		document.body.style.setProperty('--gradient-background-start', gradientBackgroundStart);
-		document.body.style.setProperty('--gradient-background-end', gradientBackgroundEnd);
-		document.body.style.setProperty('--first-color', firstColor);
-		document.body.style.setProperty('--second-color', secondColor);
-		document.body.style.setProperty('--third-color', thirdColor);
-		document.body.style.setProperty('--fourth-color', fourthColor);
-		document.body.style.setProperty('--fifth-color', fifthColor);
-		document.body.style.setProperty('--pointer-color', pointerColor);
-		document.body.style.setProperty('--size', size);
-		document.body.style.setProperty('--blending-value', blendingValue);
+		const setVars = (vars: Record<string, string>) => {
+			for (const key in vars) {
+				document.body.style.setProperty(`--${key}`, vars[key]);
+			}
+		};
+
+		setVars({
+			'gradient-background-start': gradientBackgroundStart,
+			'gradient-background-end': gradientBackgroundEnd,
+			'first-color': firstColor,
+			'second-color': secondColor,
+			'third-color': thirdColor,
+			'fourth-color': fourthColor,
+			'fifth-color': fifthColor,
+			'pointer-color': pointerColor,
+			size,
+			'blending-value': blendingValue
+		});
+
+		if (interactive) {
+			document.addEventListener('mousemove', handleMouseMove);
+			animationFrame = requestAnimationFrame(updateLoop);
+		}
+
+		return () => {
+			if (interactive) {
+				document.removeEventListener('mousemove', handleMouseMove);
+				cancelAnimationFrame(animationFrame);
+			}
+		};
 	});
 
-	function updateGradient() {
-		if (!interactiveRef) {
-			return;
-		}
-		curX = curX + (tgX - curX) / 20;
-		curY = curY + (tgY - curY) / 20;
-		interactiveRef.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+	function handleMouseMove(event: MouseEvent) {
+		if (!interactiveRef) return;
+		const rect = interactiveRef.getBoundingClientRect();
+		tgX = event.clientX - rect.left;
+		tgY = event.clientY - rect.top;
 	}
 
-	const handleMouseMove = (event: MouseEvent) => {
+	function updateLoop() {
 		if (interactiveRef) {
-			const rect = interactiveRef.getBoundingClientRect();
-			tgX = event.clientX - rect.left;
-			tgY = event.clientY - rect.top;
+			curX += (tgX - curX) / 14;
+			curY += (tgY - curY) / 14;
+			interactiveRef.style.transform = `translate3d(${Math.round(curX)}px, ${Math.round(curY)}px, 0)`;
 		}
-	};
+		animationFrame = requestAnimationFrame(updateLoop);
+	}
 </script>
 
 <div
 	class={cn(
-		'relative top-0 left-0 h-96 w-[50vw] overflow-hidden bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]',
+		'fixed top-0 left-0 z-[-1] h-full w-full overflow-hidden bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]',
 		containerClassName
 	)}
 >
 	<svg class="hidden">
 		<defs>
 			<filter id="blurMe">
-				<feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+				<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
 				<feColorMatrix
 					in="blur"
 					mode="matrix"
@@ -76,65 +95,53 @@
 			</filter>
 		</defs>
 	</svg>
-	<div class={cn('', className)}><slot /></div>
-	<div class="gradients-container h-full w-full [filter:url(#blurMe)_blur(40px)]">
-		<div
-			class={cn(
-				`absolute [background:radial-gradient(circle_at_center,_var(--first-color)_0,_var(--first-color)_50%)_no-repeat]`,
-				`top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] h-[var(--size)] w-[var(--size)] [mix-blend-mode:var(--blending-value)]`,
-				`[transform-origin:center_center]`,
-				`animate-first`,
-				`opacity-100`
-			)}
-		></div>
-		<div
-			class={cn(
-				`absolute [background:radial-gradient(circle_at_center,_rgba(var(--second-color),_0.8)_0,_rgba(var(--second-color),_0)_50%)_no-repeat]`,
-				`top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] h-[var(--size)] w-[var(--size)] [mix-blend-mode:var(--blending-value)]`,
-				`[transform-origin:calc(50%-400px)]`,
-				`animate-second`,
-				`opacity-100`
-			)}
-		></div>
-		<div
-			class={cn(
-				`absolute [background:radial-gradient(circle_at_center,_rgba(var(--third-color),_0.8)_0,_rgba(var(--third-color),_0)_50%)_no-repeat]`,
-				`top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] h-[var(--size)] w-[var(--size)] [mix-blend-mode:var(--blending-value)]`,
-				`[transform-origin:calc(50%+400px)]`,
-				`animate-third`,
-				`opacity-100`
-			)}
-		></div>
-		<div
-			class={cn(
-				`absolute [background:radial-gradient(circle_at_center,_rgba(var(--fourth-color),_0.8)_0,_rgba(var(--fourth-color),_0)_50%)_no-repeat]`,
-				`top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] h-[var(--size)] w-[var(--size)] [mix-blend-mode:var(--blending-value)]`,
-				`[transform-origin:calc(50%-200px)]`,
-				`animate-fourth`,
-				`opacity-70`
-			)}
-		></div>
-		<div
-			class={cn(
-				`absolute [background:radial-gradient(circle_at_center,_rgba(var(--fifth-color),_0.8)_0,_rgba(var(--fifth-color),_0)_50%)_no-repeat]`,
-				`top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)] h-[var(--size)] w-[var(--size)] [mix-blend-mode:var(--blending-value)]`,
-				`[transform-origin:calc(50%-800px)_calc(50%+800px)]`,
-				`animate-fifth`,
-				`opacity-100`
-			)}
-		></div>
 
+	<div class={cn('', className)}><slot /></div>
+
+	<div
+		class="gradients-container h-full w-full [filter:url(#blurMe)_blur(20px)]"
+		style="contain: layout paint;"
+	>
+		<!-- Static glowing blobs -->
+		{#each [firstColor, secondColor, thirdColor, fourthColor, fifthColor] as color, i}
+			<div
+				class={cn(
+					'absolute rounded-full [mix-blend-mode:var(--blending-value)]',
+					`opacity-${i === 3 ? '70' : '100'}`
+				)}
+				style="
+					top: calc(50% - var(--size) / 2);
+					left: calc(50% - var(--size) / 2);
+					height: var(--size);
+					width: var(--size);
+					background: radial-gradient(circle at center, rgba(${color}, 0.8) 0%, rgba(${color}, 0) 50%);
+					transform-origin: center center;
+					animation: spin ${30 + i * 10}s linear infinite;
+				"
+			></div>
+		{/each}
+
+		<!-- Pointer-following blob -->
 		{#if interactive}
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
 				bind:this={interactiveRef}
-				on:mousemove={handleMouseMove}
-				class={cn(
-					`absolute [background:radial-gradient(circle_at_center,_rgba(var(--pointer-color),_0.8)_0,_rgba(var(--pointer-color),_0)_50%)_no-repeat]`,
-					`-top-1/2 -left-1/2 h-full w-full [mix-blend-mode:var(--blending-value)]`,
-					`opacity-70`
-				)}
+				class="absolute h-full w-full opacity-70 [mix-blend-mode:var(--blending-value)]"
+				style="
+					background: radial-gradient(circle at center, rgba(var(--pointer-color), 0.8) 0%, rgba(var(--pointer-color), 0) 30%);
+					will-change: transform;
+				"
 			></div>
 		{/if}
 	</div>
 </div>
+
+<style>
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg) translateX(0px) scale(1);
+		}
+		100% {
+			transform: rotate(360deg) translateX(0px) scale(1);
+		}
+	}
+</style>

@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { ArrowUpRight, Disc } from 'lucide-svelte';
+	import GradientAnimation from '$lib/components/ui/GradientAnimation/GradientAnimation.svelte';
 
 	let progVal = 0;
 	let isAuthLoading = false;
@@ -42,11 +43,16 @@
 			progVal = 80;
 
 			if (res.ok) {
+				// Ensure backend has completed assigning session + team
 				const statusRes = await fetch('/auth/status');
 				const status = await statusRes.json();
 				hasTeam = status.user?.hasTeam ?? false;
+
 				progVal = 100;
 				isLoggedIn = true;
+
+				// ✅ Now safe to redirect
+				goto('/ready');
 			} else {
 				console.error('Session creation failed');
 				progVal = 0;
@@ -70,6 +76,7 @@
 	};
 </script>
 
+<title>Cipher Reforged - Login</title>
 <!-- ✅ Navbar -->
 <div
 	class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
@@ -109,7 +116,7 @@
 		</button>
 	{/if}
 </div>
-
+<GradientAnimation />
 <!-- ✅ Main UI -->
 <h2
 	class="mt-24 bg-gradient-to-br from-slate-300 to-slate-500 bg-clip-text py-4 text-center text-7xl font-medium tracking-tight text-transparent"
@@ -144,42 +151,27 @@
 			disabled={isAuthLoading}
 			on:click={loginWithGoogle}
 		>
-			<span class="text-sm text-neutral-300">Sign in with Google</span>
+			<!-- White Google Icon -->
+			<svg
+				class="h-5 w-5 text-white"
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 48 48"
+				fill="currentColor"
+			>
+				<path
+					d="M43.6 20.5H42V20H24v8h11.3C33.9 32.2 29.4 35 24 35c-6.1 0-11.3-4.9-11.3-11S17.9 13 24 13c2.8 0 5.3 1 7.3 2.7l5.7-5.7C33.1 6.6 28.8 5 24 5 12.4 5 3 14.4 3 26s9.4 21 21 21 21-9.4 21-21c0-1.9-.2-3.3-.4-5.5z"
+				/>
+			</svg>
+
+			<span class="cursor-pointer text-sm text-neutral-300">Sign in with Google</span>
+
+			<!-- Glow Lines -->
 			<span
-				class="absolute inset-x-0 -bottom-px block h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
+				class="absolute inset-x-0 -bottom-px block h-px bg-gradient-to-r from-transparent via-[#4E49C9] to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
 			></span>
 			<span
 				class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
 			></span>
 		</button>
-	{:else}
-		<!-- Post-Login Buttons -->
-		<div class="mt-6 flex w-[50%] flex-col items-center gap-4">
-			<a
-				href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Cipher+Reforged&details=Join+us+for+the+ultimate+hunt!&dates=20250720T180000Z/20250720T200000Z"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="btn btn-accent w-full"
-			>
-				Add to Google Calendar
-			</a>
-
-			<a
-				href="https://discord.gg/YOUR_INVITE_CODE"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="btn btn-secondary w-full"
-			>
-				Join Discord
-			</a>
-
-			{#if hasTeam}
-				<button class="btn btn-primary w-full" on:click={() => goto('/play')}> Play </button>
-			{:else}
-				<button class="btn btn-info w-full" on:click={() => goto('/team')}>
-					Join or Create a Team
-				</button>
-			{/if}
-		</div>
 	{/if}
 </center>

@@ -10,6 +10,7 @@
 	import { firebaseApp } from '$lib/firebase/client';
 	import { auth } from '$lib/utils/firebase';
 	import { onAuthStateChanged, signOut } from 'firebase/auth';
+	import GradientAnimation from '$lib/components/ui/GradientAnimation/GradientAnimation.svelte';
 
 	let loggedIn = false;
 	let hasTeam = false;
@@ -30,75 +31,84 @@
 		try {
 			await signOut(auth);
 			await fetch('/api/logout', { method: 'POST' });
-			goto('/auth');
+			goto('/');
 		} catch (err) {
 			console.error('Logout failed:', err);
 		}
 	};
 </script>
 
-<div
-	class="min-h-screen bg-gradient-to-br from-[#170e27] via-[#10102c] to-[#0d0d0e] font-sans text-[#cccccc]"
->
-	<!-- Navbar styled like Code 2 -->
-	{#if ['/', '/leaderboard', '/team'].includes($page.url.pathname)}
-		<div
-			class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
+<!-- 🧠 Navbar (always rendered) -->
+{#if ['/', '/leaderboard', '/team'].includes($page.url.pathname)}
+	<div
+		class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
+	>
+		<a class="btn btn-ghost text-md" class:text-primary={$page.url.pathname === '/'} href="/">
+			<ArrowUpRight class="mr-1" /> Home
+		</a>
+		<a
+			class="btn btn-ghost text-md"
+			class:text-primary={$page.url.pathname === '/leaderboard'}
+			href="/leaderboard"
 		>
-			<a class="btn btn-ghost text-md" class:text-primary={$page.url.pathname === '/'} href="/">
-				<ArrowUpRight class="mr-1" /> Home
-			</a>
+			<ArrowUpRight class="mr-1" /> Leaderboard
+		</a>
+		{#if loggedIn}
 			<a
 				class="btn btn-ghost text-md"
-				class:text-primary={$page.url.pathname === '/leaderboard'}
-				href="/leaderboard"
+				class:text-primary={$page.url.pathname === '/team/info'}
+				href="/team/info"
 			>
-				<ArrowUpRight class="mr-1" /> Leaderboard
+				<ArrowUpRight class="mr-1" /> Team
 			</a>
-			{#if loggedIn}
-				<a
-					class="btn btn-ghost text-md"
-					class:text-primary={$page.url.pathname === '/team/info'}
-					href="/team/info"
-				>
-					<ArrowUpRight class="mr-1" /> Team
-				</a>
-			{/if}
-			{#if loggedIn}
-				<a
-					class="btn btn-ghost text-md"
-					class:text-primary={$page.url.pathname === '/profile'}
-					href="/profile"
-				>
-					<ArrowUpRight class="mr-1" /> Profile
-				</a>
-			{/if}
-			{#if loggedIn && hasTeam}
-				<a class="btn btn-ghost text-md" href="/play">
-					<Disc class="mr-1" /> Play
-				</a>
-			{/if}
-
-			{#if loggedIn}
-				<button on:click={logout} class="btn btn-sm ml-auto bg-red-500 text-white hover:bg-red-600">
-					Logout
-				</button>
-			{/if}
-		</div>
-	{:else if $page.url.pathname === '/ready'}
-		<div
-			class="navbar z-50 border-b border-white/10 bg-[#1a1a1d]/80 px-4 py-2 shadow-md backdrop-blur"
-		>
-			<a class="btn btn-ghost text-md" href="/">
-				<ArrowUpRight class="mr-1" /> Home
+		{/if}
+		{#if loggedIn}
+			<a
+				class="btn btn-ghost text-md"
+				class:text-primary={$page.url.pathname === '/profile'}
+				href="/profile"
+			>
+				<ArrowUpRight class="mr-1" /> Profile
 			</a>
-		</div>
-	{/if}
+		{/if}
+		{#if loggedIn && hasTeam}
+			<a class="btn btn-ghost text-md" href="/play">
+				<Disc class="mr-1" /> Play
+			</a>
+		{/if}
 
-	<main class="px-6 py-10">
-		<slot />
-	</main>
+		{#if loggedIn}
+			<button on:click={logout} class="btn btn-sm ml-auto bg-red-500 text-white hover:bg-red-600">
+				Logout
+			</button>
+		{/if}
+	</div>
+{:else if $page.url.pathname === '/ready'}
+	<div
+		class="navbar z-50 border-b border-white/10 bg-[#1a1a1d]/80 px-4 py-2 shadow-md backdrop-blur"
+	>
+		<a class="btn btn-ghost text-md" href="/">
+			<ArrowUpRight class="mr-1" /> Home
+		</a>
+	</div>
+{/if}
 
-	<!-- Toasts (Code 1) -->
-	<Toaster position="top-right" />
-</div>
+{#if ['/', '/auth', '/ready', '/team/info', '/profile'].includes($page.url.pathname)}
+	<GradientAnimation>
+		<main class="px-6 py-10">
+			<slot />
+		</main>
+	</GradientAnimation>
+{:else}
+	<!-- 🔵 Default background for other pages -->
+	<div
+		class="min-h-screen bg-gradient-to-br from-[#1E192B] via-[#100D17] to-[#1E192B] font-sans text-[#cccccc]"
+	>
+		<main class="px-6 py-10">
+			<slot />
+		</main>
+	</div>
+{/if}
+
+<!-- 🔔 Toasts (always shown) -->
+<Toaster position="top-right" />
