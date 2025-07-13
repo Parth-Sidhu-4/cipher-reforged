@@ -140,7 +140,7 @@
 	</div>
 {/if}
 
-{#if ['/', '/auth', '/ready', '/team/info', '/profile', '/play'].includes($page.url.pathname)}
+{#if ['/', '/auth', '/ready', '/team/info', '/profile'].includes($page.url.pathname)}
 	<GradientAnimation>
 		<main class="px-6 py-10">
 			<slot />
