@@ -75,7 +75,8 @@ export const POST: RequestHandler = async ({ request }) => {
 					{
 						completed: FieldValue.arrayUnion(questionId),
 						completedLevels: FieldValue.arrayUnion(questionId),
-						last_change: FieldValue.serverTimestamp()
+						last_change: FieldValue.serverTimestamp(),
+						level: FieldValue.increment(1)
 					},
 					{ merge: true }
 				);
