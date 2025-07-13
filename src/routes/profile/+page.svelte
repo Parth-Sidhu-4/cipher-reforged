@@ -120,9 +120,10 @@
 	</div>
 
 	<div
-		class="absolute top-full left-0 flex w-full flex-col items-center gap-2 border-b border-white/10 bg-transparent py-2 backdrop-blur md:static md:flex md:flex-row md:items-center md:justify-start md:border-none md:p-0 {showMobileMenu
-			? 'flex'
-			: 'hidden'}"
+		class="absolute top-full left-0 flex w-full flex-col items-center gap-2 border-b border-white/10 py-2 shadow-lg md:static md:flex md:flex-row md:items-center md:justify-start md:border-none md:p-0 md:shadow-none
+        
+        {showMobileMenu ? 'bg-opacity-70 flex bg-black backdrop-blur-sm' : 'hidden'}
+        "
 	>
 		<a
 			class="btn btn-ghost text-md"
@@ -160,7 +161,7 @@
 			<button
 				on:click={() => {
 					logout();
-					closeMobileMenu(); // Close menu after logout
+					closeMobileMenu();
 				}}
 				class="btn btn-sm bg-red-500 text-white hover:bg-red-600 md:ml-auto"
 			>

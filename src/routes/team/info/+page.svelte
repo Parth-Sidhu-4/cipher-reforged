@@ -39,6 +39,7 @@
 	let loading = false;
 	let loggedIn = false;
 	let hasTeam = true;
+	let showMobileMenu = false;
 
 	onMount(() => {
 		onAuthStateChanged(auth, (user) => {
@@ -89,31 +90,35 @@
 		}
 		loading = false;
 	};
+	const closeMobileMenu = () => {
+		showMobileMenu = false;
+	};
 </script>
 
 <title>Cipher Reforged - Team Info</title>
 <GradientAnimation />
 <!-- Navbar -->
 <div
-	class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
+	class="absolute top-full left-0 flex w-full flex-col items-center gap-2 border-b border-white/10 py-2 shadow-lg md:static md:flex md:flex-row md:items-center md:justify-start md:border-none md:p-0 md:shadow-none
+        
+        {showMobileMenu ? 'bg-opacity-70 flex bg-black backdrop-blur-sm' : 'hidden'}
+        "
 >
-	<a class="btn btn-ghost text-md" class:text-primary={$page.url.pathname === '/'} href="/">
-		<ArrowUpRight class="mr-1" /> Home
-	</a>
 	<a
 		class="btn btn-ghost text-md"
 		class:text-primary={$page.url.pathname === '/leaderboard'}
 		href="/leaderboard"
+		on:click={closeMobileMenu}
 	>
 		<ArrowUpRight class="mr-1" /> Leaderboard
 	</a>
 
 	{#if loggedIn}
-		<GradientAnimation />
 		<a
 			class="btn btn-ghost text-md"
 			class:text-primary={$page.url.pathname === '/team/info'}
 			href="/team/info"
+			on:click={closeMobileMenu}
 		>
 			<ArrowUpRight class="mr-1" /> Team
 		</a>
@@ -121,22 +126,28 @@
 			class="btn btn-ghost text-md"
 			class:text-primary={$page.url.pathname === '/profile'}
 			href="/profile"
+			on:click={closeMobileMenu}
 		>
 			<ArrowUpRight class="mr-1" /> Profile
 		</a>
 
 		{#if hasTeam}
-			<a class="btn btn-ghost text-md" href="/play">
+			<a class="btn btn-ghost text-md" href="/play" on:click={closeMobileMenu}>
 				<Disc class="mr-1" /> Play
 			</a>
 		{/if}
 
-		<button on:click={logout} class="btn btn-sm ml-auto bg-red-500 text-white hover:bg-red-600">
+		<button
+			on:click={() => {
+				logout();
+				closeMobileMenu();
+			}}
+			class="btn btn-sm bg-red-500 text-white hover:bg-red-600 md:ml-auto"
+		>
 			Logout
 		</button>
 	{/if}
 </div>
-
 <!-- Main Page Content -->
 <div class="pt-20">
 	<title>Cipher Reforged - Your Team</title>

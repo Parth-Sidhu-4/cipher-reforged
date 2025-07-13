@@ -6,7 +6,6 @@
 	import { page } from '$app/stores';
 	import { ArrowUpRight, Disc, Menu, X } from 'lucide-svelte';
 
-	import { firebaseApp } from '$lib/firebase/client';
 	import { auth } from '$lib/utils/firebase';
 	import { onAuthStateChanged, signOut } from 'firebase/auth';
 	import GradientAnimation from '$lib/components/ui/GradientAnimation/GradientAnimation.svelte';
@@ -20,9 +19,21 @@
 			loggedIn = !!user;
 
 			if (user) {
-				const res = await fetch('/auth/status');
-				const status = await res.json();
-				hasTeam = status.user?.hasTeam ?? false;
+				try {
+					const res = await fetch('/auth/status');
+					if (res.ok) {
+						const status = await res.json();
+						hasTeam = status.user?.hasTeam ?? false;
+					} else {
+						console.error('Failed to fetch user status:', res.status, res.statusText);
+						hasTeam = false;
+					}
+				} catch (error) {
+					console.error('Error fetching user status:', error);
+					hasTeam = false;
+				}
+			} else {
+				hasTeam = false;
 			}
 		});
 	});
@@ -46,7 +57,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
-{#if ['/', '/leaderboard', '/team'].includes($page.url.pathname)}
+{#if ['/', '/leaderboard', '/team', '/profile', '/play'].includes($page.url.pathname)}
 	<div
 		class="fixed top-0 left-0 z-50 flex w-full items-center justify-between border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur md:justify-start"
 	>
@@ -70,9 +81,9 @@
 		</div>
 
 		<div
-			class="absolute top-full left-0 flex w-full flex-col items-center gap-2 border-b border-white/10 bg-transparent py-2 backdrop-blur md:static md:flex md:flex-row md:items-center md:justify-start md:border-none md:p-0 {showMobileMenu
-				? 'flex'
-				: 'hidden'}"
+			class="absolute top-full left-0 flex w-full flex-col items-center gap-2 border-b border-white/10 py-2 shadow-lg md:static md:flex md:flex-row md:items-center md:justify-start md:border-none md:p-0 md:shadow-none
+            {showMobileMenu ? 'bg-opacity-70 flex bg-black backdrop-blur-sm' : 'hidden'}
+            "
 		>
 			<a
 				class="btn btn-ghost text-md"
@@ -82,6 +93,7 @@
 			>
 				<ArrowUpRight class="mr-1" /> Leaderboard
 			</a>
+
 			{#if loggedIn}
 				<a
 					class="btn btn-ghost text-md"
@@ -91,8 +103,6 @@
 				>
 					<ArrowUpRight class="mr-1" /> Team
 				</a>
-			{/if}
-			{#if loggedIn}
 				<a
 					class="btn btn-ghost text-md"
 					class:text-primary={$page.url.pathname === '/profile'}
@@ -101,14 +111,13 @@
 				>
 					<ArrowUpRight class="mr-1" /> Profile
 				</a>
-			{/if}
-			{#if loggedIn && hasTeam}
-				<a class="btn btn-ghost text-md" href="/play" on:click={closeMobileMenu}>
-					<Disc class="mr-1" /> Play
-				</a>
-			{/if}
 
-			{#if loggedIn}
+				{#if hasTeam}
+					<a class="btn btn-ghost text-md" href="/play" on:click={closeMobileMenu}>
+						<Disc class="mr-1" /> Play
+					</a>
+				{/if}
+
 				<button
 					on:click={() => {
 						logout();
@@ -131,7 +140,7 @@
 	</div>
 {/if}
 
-{#if ['/', '/auth', '/ready', '/team/info', '/profile'].includes($page.url.pathname)}
+{#if ['/', '/auth', '/ready', '/team/info', '/profile', '/play'].includes($page.url.pathname)}
 	<GradientAnimation>
 		<main class="px-6 py-10">
 			<slot />
