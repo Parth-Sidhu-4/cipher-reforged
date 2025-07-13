@@ -10,8 +10,7 @@ This repo contains the source code for the puzzle platform used in **Cipher Refo
 
 ## 🚀 Live Demo
 
-[🔗 Click here to view the hosted version](https://cipher-reforged.vercel.app) *(optional link)*
-
+[🔗 Click here to view the hosted version](https://cipher-reforged.vercel.app)
 ---
 
 ## 📦 Tech Stack
