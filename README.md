@@ -10,9 +10,7 @@ This repo contains the source code for the puzzle platform used in **Cipher Refo
 
 ## 🚀 Live Demo
 
-[🔗 Click here to view the hosted version](https://cipher-reforged.vercel.app) _(optional link)_
-
----
+## [🔗 Click here to view the hosted version](https://cipher-reforged.vercel.app)
 
 ## 📦 Tech Stack
 
@@ -119,13 +117,6 @@ src/
   - [Shreya Mohanty](https://github.com/ShreyaPMohanty6)
 
 - 🧪 **Inspiration for the Original Cipher Saga 2.0 platform**:
-  - [Krishaay](https://github.com/kry0sc0pic)
-  - [Encryptid Finale](https://github.com/kry0sc0pic/encryptid-finale) by [kry0sc0pic](https://github.com/kry0sc0pic)
-
----
-
-## 📄 License
-
-This project is meant for learning and event-hosting purposes. It is not a freely redistributable framework for building puzzle events.
+  - [Encryptid Finale](https://github.com/kry0sc0pic/encryptid-finale) by [Krishaay](https://github.com/kry0sc0pic)
 
 ---
