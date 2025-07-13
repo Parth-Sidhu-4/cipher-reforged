@@ -5,14 +5,16 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { Disc, ArrowUpRight, CheckCircle } from 'lucide-svelte';
+	import { Disc, ArrowUpRight, CheckCircle, Menu, X } from 'lucide-svelte';
 
 	let user: User | null = null;
 	let displayName = '';
 	let message = '';
 	let loading = false;
+	let hasTeam = false;
 	let loggedIn = false;
 	let success = false;
+	let showMobileMenu = false;
 
 	onMount(() => {
 		if (!browser) return;
@@ -84,47 +86,88 @@
 			}, 3000);
 		}
 	};
+	const closeMobileMenu = () => {
+		showMobileMenu = false;
+	};
 </script>
+
+<svelte:head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+</svelte:head>
 
 <title>Cipher Reforged - Profile</title>
 <!-- Navbar -->
 <div
-	class="fixed top-0 left-0 z-50 flex w-full items-center border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur"
+	class="fixed top-0 left-0 z-50 flex w-full items-center justify-between border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur md:justify-start"
 >
-	<a class="btn btn-ghost text-md" class:text-primary={$page.url.pathname === '/'} href="/">
-		<ArrowUpRight class="mr-1" /> Home
-	</a>
 	<a
 		class="btn btn-ghost text-md"
-		class:text-primary={$page.url.pathname === '/leaderboard'}
-		href="/leaderboard"
+		class:text-primary={$page.url.pathname === '/'}
+		href="/"
+		on:click={closeMobileMenu}
 	>
-		<ArrowUpRight class="mr-1" /> Leaderboard
+		<ArrowUpRight class="mr-1" /> Home
 	</a>
 
-	{#if loggedIn}
+	<div class="md:hidden">
+		<button class="btn btn-ghost" on:click={() => (showMobileMenu = !showMobileMenu)}>
+			{#if showMobileMenu}
+				<X />
+			{:else}
+				<Menu />
+			{/if}
+		</button>
+	</div>
+
+	<div
+		class="absolute top-full left-0 flex w-full flex-col items-center gap-2 border-b border-white/10 bg-transparent py-2 backdrop-blur md:static md:flex md:flex-row md:items-center md:justify-start md:border-none md:p-0 {showMobileMenu
+			? 'flex'
+			: 'hidden'}"
+	>
 		<a
 			class="btn btn-ghost text-md"
-			class:text-primary={$page.url.pathname === '/team/info'}
-			href="/team/info"
+			class:text-primary={$page.url.pathname === '/leaderboard'}
+			href="/leaderboard"
+			on:click={closeMobileMenu}
 		>
-			<ArrowUpRight class="mr-1" /> Team
-		</a>
-		<a
-			class="btn btn-ghost text-md"
-			class:text-primary={$page.url.pathname === '/profile'}
-			href="/profile"
-		>
-			<ArrowUpRight class="mr-1" /> Profile
+			<ArrowUpRight class="mr-1" /> Leaderboard
 		</a>
 
-		<a class="btn btn-ghost text-md" href="/play">
-			<Disc class="mr-1" /> Play
-		</a>
-		<button on:click={logout} class="btn btn-sm ml-auto bg-red-500 text-white hover:bg-red-600">
-			Logout
-		</button>
-	{/if}
+		{#if loggedIn}
+			<a
+				class="btn btn-ghost text-md"
+				class:text-primary={$page.url.pathname === '/team/info'}
+				href="/team/info"
+				on:click={closeMobileMenu}
+			>
+				<ArrowUpRight class="mr-1" /> Team
+			</a>
+			<a
+				class="btn btn-ghost text-md"
+				class:text-primary={$page.url.pathname === '/profile'}
+				href="/profile"
+				on:click={closeMobileMenu}
+			>
+				<ArrowUpRight class="mr-1" /> Profile
+			</a>
+
+			{#if hasTeam}
+				<a class="btn btn-ghost text-md" href="/play" on:click={closeMobileMenu}>
+					<Disc class="mr-1" /> Play
+				</a>
+			{/if}
+
+			<button
+				on:click={() => {
+					logout();
+					closeMobileMenu(); // Close menu after logout
+				}}
+				class="btn btn-sm bg-red-500 text-white hover:bg-red-600 md:ml-auto"
+			>
+				Logout
+			</button>
+		{/if}
+	</div>
 </div>
 
 <!-- Page Content -->
