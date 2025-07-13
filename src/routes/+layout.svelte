@@ -57,7 +57,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
-{#if ['/', '/leaderboard', '/team', '/profile', '/play'].includes($page.url.pathname)}
+{#if ['/', '/leaderboard', '/team', '/profile'].includes($page.url.pathname)}
 	<div
 		class="fixed top-0 left-0 z-50 flex w-full items-center justify-between border-b border-white/10 bg-transparent px-4 py-2 shadow-md backdrop-blur md:justify-start"
 	>
