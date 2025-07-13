@@ -116,14 +116,7 @@ src/
   - [Shreya Mohanty](https://github.com/ShreyaPMohanty6)
 
 - 🧪 **Inspiration for the Original Cipher Saga 2.0 platform**:
-  - [Krishaay](https://github.com/kry0sc0pic)
-  - [Encryptid Finale](https://github.com/kry0sc0pic/encryptid-finale) by [kry0sc0pic](https://github.com/kry0sc0pic)
+  - [Encryptid Finale](https://github.com/kry0sc0pic/encryptid-finale) by [Krishaay](https://github.com/kry0sc0pic)
   
-
----
-
-## 📄 License
-
-This project is meant for learning and event-hosting purposes. It is not a freely redistributable framework for building puzzle events.
 
 ---
