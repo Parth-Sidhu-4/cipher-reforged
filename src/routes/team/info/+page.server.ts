@@ -40,7 +40,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return {
 		teamName: teamData.teamName,
 		code: teamData.code,
-		gsv: teamData.gsv_verified ?? false, // 👈 Add this
+		gsv: teamData.gsv_verified ?? false, 
 		members
 	};
 };
