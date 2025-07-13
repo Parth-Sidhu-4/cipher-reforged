@@ -94,21 +94,18 @@
 
 		loading = false;
 	};
-	const handleKeydown = (e: KeyboardEvent) => {
-		const key = e.key;
-
-		const isLetter = /^[a-zA-Z]$/.test(key);
-		const isControlKey = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'].includes(key);
-
-		if (!isLetter && !isControlKey) {
-			e.preventDefault();
-		}
-	};
-
 	const handleInput = (e: Event) => {
 		const target = e.target as HTMLInputElement;
+		answer = target.value.toLowerCase().replace(/[^a-z]/g, ''); // only lowercase a-z
+	};
 
-		answer = target.value.toLowerCase().replace(/[^a-z]/g, '');
+	const handleKeydown = (e: KeyboardEvent) => {
+		const isAlphabet = /^[a-zA-Z]$/.test(e.key);
+		const allowedKeys = ['Backspace', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'];
+
+		if (!isAlphabet && !allowedKeys.includes(e.key)) {
+			e.preventDefault();
+		}
 	};
 </script>
 

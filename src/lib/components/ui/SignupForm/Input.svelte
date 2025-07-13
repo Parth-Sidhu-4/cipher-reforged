@@ -51,6 +51,7 @@
 	>
 		<input
 			on:input={onInput}
+			on:keydown
 			{type}
 			class={cn(
 				`dark:placeholder-text-neutral-600 shadow-input flex h-10 w-full rounded-md border-none bg-gray-50 px-3 py-2 text-sm text-black transition  duration-400 group-hover/input:shadow-none
