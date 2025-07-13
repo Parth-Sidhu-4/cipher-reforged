@@ -68,6 +68,12 @@
 			<GlowingStarsBackgroundCard bgColorclass={getBgColorFromPosition(teamPosition)}>
 				<GlowingStarsTitle className={getTextColorFromPosition(teamPosition)}>
 					{team.teamName}
+					{#if !team.gsv}
+						<div class="badge badge-error badge-outline">Non-GSV</div>
+					{/if}
+					{#if team.teamName === 'Organizers'}
+						<div class="badge badge-success badge-outline">Boss</div>
+					{/if}
 				</GlowingStarsTitle>
 
 				<GlowingStarsDescription className={`font-bold ${getTextColorFromPosition(teamPosition)}`}>

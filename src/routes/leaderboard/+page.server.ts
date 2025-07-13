@@ -14,7 +14,7 @@ export const load: PageServerLoad = async () => {
 			const data = doc.data();
 			return {
 				teamName: data.teamName,
-				score: (data.level ?? 1) * 100,
+				score: ((data.level ?? 1) - 1) * 100,
 				members: data.members?.length ?? 0,
 				lastChange: data.last_change?.toDate?.().toISOString?.() ?? null,
 				gsv: data.gsv_verified ?? false //
