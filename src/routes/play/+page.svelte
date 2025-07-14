@@ -3,6 +3,8 @@
 	import { Input } from '$lib/components/ui/SignupForm';
 	import { sendSuccessToast, sendErrorToast } from '$lib/utils/toast_utils';
 	import { tick } from 'svelte';
+	import Button from '$lib/components/ui/MovingBorder/Button.svelte';
+	import { goto } from '$app/navigation';
 
 	let logsModal: HTMLDialogElement | null = null;
 	let container: HTMLDivElement | null = null;
@@ -113,7 +115,16 @@
 
 {#if data.blocked || questions.length === 0}
 	<div class="flex min-h-screen items-center justify-center">
-		<p class="text-xl font-semibold text-red-600">🚫 You cannot view this right now.</p>
+		<div class="flex flex-col items-center gap-4">
+			<p class="text-xl font-semibold text-red-600">🚫 You cannot view this right now.</p>
+			<Button
+				on:click={() => goto('/')}
+				borderRadius="0.75rem"
+				className="cursor-pointer border-slate-800 text-base font-bold text-white shadow-md inline-flex items-center"
+			>
+				Return to Home
+			</Button>
+		</div>
 	</div>
 {:else}
 	<!-- ✅ Top NavBar (fixed, full width, transparent) -->
@@ -164,7 +175,8 @@
 					id="answer"
 					placeholder="Enter your answer..."
 					type="text"
-					onInput={handleInput}
+					on:input={handleInput}
+					on:keydown={handleKeydown}
 					autocomplete="off"
 				/>
 			</div>
