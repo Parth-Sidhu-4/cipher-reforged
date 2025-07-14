@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { ArrowUpRight, Disc, Menu, X } from 'lucide-svelte';
+	import { ArrowUpRight, Disc, Menu, X, Settings } from 'lucide-svelte';
 
 	import { auth } from '$lib/utils/firebase';
 	import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -13,12 +13,17 @@
 	let loggedIn = false;
 	let hasTeam = false;
 	let showMobileMenu = false;
+	let isAdmin = false;
+
+	const adminUIDs = ['ZYVuKTPMO4Ydahd3UZqhZeBbZ3z2', 'jpjCQNrc4qevc7mtuiKnxtmGaJg1'];
 
 	onMount(() => {
 		onAuthStateChanged(auth, async (user) => {
 			loggedIn = !!user;
 
 			if (user) {
+				isAdmin = adminUIDs.includes(user.uid);
+
 				try {
 					const res = await fetch('/auth/status');
 					if (res.ok) {
@@ -34,6 +39,7 @@
 				}
 			} else {
 				hasTeam = false;
+				isAdmin = false;
 			}
 		});
 	});
@@ -82,8 +88,7 @@
 
 		<div
 			class="absolute top-full left-0 flex w-full flex-col items-center gap-2 border-b border-white/10 py-2 shadow-lg md:static md:flex md:flex-row md:items-center md:justify-start md:border-none md:p-0 md:shadow-none
-            {showMobileMenu ? 'bg-opacity-70 flex bg-black backdrop-blur-sm' : 'hidden'}
-            "
+            {showMobileMenu ? 'bg-opacity-70 flex bg-black backdrop-blur-sm' : 'hidden'}"
 		>
 			<a
 				class="btn btn-ghost text-md"
@@ -115,6 +120,16 @@
 				{#if hasTeam}
 					<a class="btn btn-ghost text-md" href="/play" on:click={closeMobileMenu}>
 						<Disc class="mr-1" /> Play
+					</a>
+				{/if}
+
+				{#if isAdmin}
+					<a
+						class="btn btn-sm bg-purple-600 text-white hover:bg-purple-700"
+						href="/admin"
+						on:click={closeMobileMenu}
+					>
+						<Settings class="mr-1" /> Admin
 					</a>
 				{/if}
 

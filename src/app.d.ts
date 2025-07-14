@@ -8,6 +8,14 @@ declare namespace App {
 			email: decodedToken.email!;
 
 			name: string;
+			isAdmin: boolean;
 		} | null;
+		getSession: () => Promise<{
+			user: {
+				uid: string;
+				email: string;
+				name: string;
+			};
+		} | null>;
 	}
 }
