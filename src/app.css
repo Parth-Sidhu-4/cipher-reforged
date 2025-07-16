@@ -28,3 +28,16 @@
 	color: #c084fc !important; /* light purple or any other accent */
 	backdrop-filter: blur(2px); /* optional: smooth glow */
 }
+html.dark {
+	background-color: #0d0d0d;
+	color: #cccccc;
+}
+
+body {
+	background-color: inherit;
+	color: inherit;
+}
+html {
+	background-color: #1a1a1d;
+	color: #cccccc;
+}
