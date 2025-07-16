@@ -18,31 +18,35 @@
 	const adminUIDs = ['ZYVuKTPMO4Ydahd3UZqhZeBbZ3z2', 'jpjCQNrc4qevc7mtuiKnxtmGaJg1'];
 
 	onMount(() => {
-		onAuthStateChanged(auth, async (user) => {
-			loggedIn = !!user;
+	// Force dark mode always
+	document.documentElement.classList.add('dark');
 
-			if (user) {
-				isAdmin = adminUIDs.includes(user.uid);
+	onAuthStateChanged(auth, async (user) => {
+		loggedIn = !!user;
 
-				try {
-					const res = await fetch('/auth/status');
-					if (res.ok) {
-						const status = await res.json();
-						hasTeam = status.user?.hasTeam ?? false;
-					} else {
-						console.error('Failed to fetch user status:', res.status, res.statusText);
-						hasTeam = false;
-					}
-				} catch (error) {
-					console.error('Error fetching user status:', error);
+		if (user) {
+			isAdmin = adminUIDs.includes(user.uid);
+
+			try {
+				const res = await fetch('/auth/status');
+				if (res.ok) {
+					const status = await res.json();
+					hasTeam = status.user?.hasTeam ?? false;
+				} else {
+					console.error('Failed to fetch user status:', res.status, res.statusText);
 					hasTeam = false;
 				}
-			} else {
+			} catch (error) {
+				console.error('Error fetching user status:', error);
 				hasTeam = false;
-				isAdmin = false;
 			}
-		});
+		} else {
+			hasTeam = false;
+			isAdmin = false;
+		}
 	});
+});
+
 
 	const logout = async () => {
 		try {
