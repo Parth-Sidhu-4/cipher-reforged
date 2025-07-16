@@ -18,6 +18,9 @@
 	const adminUIDs = ['ZYVuKTPMO4Ydahd3UZqhZeBbZ3z2', 'jpjCQNrc4qevc7mtuiKnxtmGaJg1'];
 
 	onMount(() => {
+		// Force dark mode always
+		document.documentElement.classList.add('dark');
+
 		onAuthStateChanged(auth, async (user) => {
 			loggedIn = !!user;
 

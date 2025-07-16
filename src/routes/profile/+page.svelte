@@ -178,7 +178,7 @@
 	{#if user}
 		<div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
 			<input
-				class="input input-bordered w-full max-w-md"
+				class="input input-dark input-bordered w-full max-w-md"
 				bind:value={displayName}
 				placeholder="Enter your name"
 			/>

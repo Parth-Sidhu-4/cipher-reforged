@@ -100,7 +100,7 @@
 			<input
 				bind:value={teamName}
 				placeholder="Enter team name"
-				class="input input-bordered w-full max-w-sm"
+				class="input input-dark input-bordered w-full max-w-sm"
 			/>
 
 			<button class="btn btn-primary w-full max-w-sm" on:click={createTeam} disabled={loading}>
@@ -119,7 +119,7 @@
 			<input
 				bind:value={teamCode}
 				placeholder="Enter team code"
-				class="input input-bordered w-full max-w-sm"
+				class="input input-dark input-bordered w-full max-w-sm"
 			/>
 
 			<button class="btn btn-secondary w-full max-w-sm" on:click={joinTeam} disabled={loading}>

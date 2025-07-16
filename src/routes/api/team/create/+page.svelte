@@ -49,7 +49,7 @@
 <input
 	bind:value={teamName}
 	placeholder="Team name"
-	class="input input-bordered mb-4 w-full max-w-md"
+	class="input input-dark input-bordered mb-4 w-full max-w-md"
 />
 
 <button class="btn btn-primary" on:click={createTeam} disabled={loading}>

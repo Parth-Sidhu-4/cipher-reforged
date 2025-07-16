@@ -26,6 +26,10 @@
 </script>
 
 <h1 class="mb-4 text-xl font-bold">Choose your Display Name</h1>
-<input bind:value={displayName} class="input input-bordered mb-4" placeholder="Your name" />
+<input
+	bind:value={displayName}
+	class="input input-dark input-bordered mb-4"
+	placeholder="Your name"
+/>
 <button on:click={setName} class="btn btn-primary">Submit</button>
 {#if error}<p class="text-red-500">{error}</p>{/if}

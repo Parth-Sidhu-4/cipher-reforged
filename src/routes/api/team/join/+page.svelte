@@ -52,7 +52,7 @@
 	<input
 		bind:value={code}
 		placeholder="Enter team code"
-		class="input input-bordered mb-4 w-full max-w-md uppercase"
+		class="input input-dark input-bordered mb-4 w-full max-w-md uppercase"
 	/>
 
 	<button class="btn btn-primary" on:click={joinTeam} disabled={loading}>
