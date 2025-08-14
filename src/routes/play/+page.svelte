@@ -96,7 +96,12 @@
 
 		loading = false;
 	};
-	const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+	const normalize = (str: string) =>
+	  str
+	    .toLowerCase()
+	    .replace(/[^a-z0-9]/gi, '') // remove all non-alphanumeric
+	    .trim();
+
 	const handleInput = (e: Event) => {
 	    const target = e.target as HTMLInputElement;
 	    answer = normalize(target.value);
