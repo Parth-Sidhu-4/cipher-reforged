@@ -96,10 +96,12 @@
 
 		loading = false;
 	};
+	const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
 	const handleInput = (e: Event) => {
-		const target = e.target as HTMLInputElement;
-		answer = target.value.toLowerCase().replace(/[^a-z]/g, ''); // only lowercase a-z
+	    const target = e.target as HTMLInputElement;
+	    answer = normalize(target.value);
 	};
+
 
 	const handleKeydown = (e: KeyboardEvent) => {
 		const isAlphabet = /^[a-zA-Z]$/.test(e.key);
