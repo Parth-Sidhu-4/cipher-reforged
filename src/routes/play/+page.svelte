@@ -177,16 +177,16 @@
 
 		<!-- Answer Input -->
 		{#if !isCompleted}
-			<div class="mb-4 w-[min(90vw,450px)]">
-				<Input
-					id="answer"
-					placeholder="Enter your answer..."
-					type="text"
-					on:input={handleInput}
-					on:keydown={handleKeydown}
-					autocomplete="off"
-				/>
-			</div>
+	<div class="mb-4 w-[min(90vw,450px)]">
+		<Input
+			id="answer"
+			placeholder="Enter your answer..."
+			type="text"
+			bind:value={answer} 
+			on:keydown={handleKeydown}
+			autocomplete="off"
+		/>
+	</div>
 
 			<!-- Submit Button -->
 			<button class="btn btn-wide btn-primary" on:click={submit} disabled={loading}>
